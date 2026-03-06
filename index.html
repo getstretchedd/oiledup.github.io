@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OiledUp 🛢️</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;background:linear-gradient(135deg,#0a0f1e 0%,#0d1628 50%,#0a1520 100%);font-family:Georgia,serif;color:#e2e8f0;}
+a{text-decoration:none;}
+button{cursor:pointer;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px;}
+
+/* HEADER */
+.header{border-bottom:1px solid rgba(255,255,255,0.08);padding:18px 32px 16px;background:rgba(255,255,255,0.03);}
+.header-top{display:flex;align-items:center;gap:12px;margin-bottom:4px;flex-wrap:wrap;}
+.header-label{font-size:10px;letter-spacing:4px;color:#64748b;text-transform:uppercase;font-family:monospace;}
+.header-divider{height:1px;flex:1;background:rgba(255,255,255,0.06);min-width:20px;}
+.header h1{font-size:clamp(18px,2.5vw,27px);font-weight:400;letter-spacing:-0.5px;color:#f1f5f9;}
+.header-sub{font-size:12px;color:#64748b;margin-top:4px;font-family:monospace;}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 32px;overflow-x:auto;}
+.tab-btn{padding:12px 18px;background:none;border:none;border-bottom:2px solid transparent;color:#64748b;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-family:monospace;transition:all 0.2s;white-space:nowrap;margin-bottom:-1px;}
+.tab-btn.active{border-bottom-color:#22d3a0;color:#22d3a0;}
+.tab-btn:hover:not(.active){color:#94a3b8;}
+
+/* CONTENT */
+.content{padding:24px 32px;max-width:1400px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
+.industry-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px;cursor:pointer;transition:border-color 0.2s;}
+.industry-card:hover{border-color:rgba(34,211,160,0.4);}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.card-title{font-size:14px;font-weight:600;color:#f1f5f9;}
+.card-fuel{font-size:10px;color:#64748b;font-family:monospace;letter-spacing:1px;margin-top:3px;}
+.badge-teal{background:rgba(34,211,160,0.1);border:1px solid rgba(34,211,160,0.3);border-radius:6px;padding:3px 9px;font-size:12px;font-family:monospace;color:#22d3a0;white-space:nowrap;}
+.share-bar{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:12px;}
+.share-bar-fill{height:100%;background:#22d3a0;border-radius:3px;}
+.card-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.label-sm{font-size:10px;color:#64748b;font-family:monospace;}
+.elasticity-badge{font-size:10px;font-family:monospace;border-radius:4px;padding:2px 7px;border:1px solid;}
+.card-liquidity{font-size:11px;color:#94a3b8;margin-bottom:10px;}
+.mini-bars{display:flex;gap:3px;}
+.mini-bar-wrap{flex:1;text-align:center;}
+.mini-bar-outer{height:28px;border-radius:2px;display:flex;align-items:flex-end;overflow:hidden;}
+.mini-bar-inner{width:100%;border-radius:1px 1px 0 0;}
+.mini-bar-label{font-size:8px;color:#475569;font-family:monospace;margin-top:2px;}
+.legend{margin-top:16px;padding:12px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-dot{width:9px;height:9px;border-radius:2px;}
+.legend-text{font-size:10px;color:#64748b;font-family:monospace;}
+
+
+/* CUSTOMER SEGMENTS */
+.cust-row{border:1px solid rgba(255,255,255,0.07);border-radius:8px;overflow:hidden;background:rgba(255,255,255,0.03);transition:border-color 0.2s;cursor:pointer;}
+.cust-row:hover{border-color:rgba(34,211,160,0.3);}
+.cust-row-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:8px;}
+.cust-detail{padding:12px 14px 14px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.15);}
+.cust-stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;}
+.cust-stat-key{font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace;margin-bottom:2px;}
+.cust-stat-val{font-size:14px;font-family:monospace;color:#e2e8f0;}
+
+/* SCENARIO */
+.price-selector{margin-bottom:24px;}
+.price-buttons{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.price-btn{padding:8px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#94a3b8;font-size:13px;font-family:monospace;transition:all 0.15s;}
+.price-btn.active{background:rgba(34,211,160,0.15);border-color:#22d3a0;color:#22d3a0;}
+.price-tag{font-size:9px;margin-left:3px;color:#475569;}
+.agg-card{padding:18px 22px;background:rgba(34,211,160,0.06);border:1px solid rgba(34,211,160,0.2);border-radius:10px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;min-height:90px;}
+.agg-label{font-size:10px;color:#22d3a0;font-family:monospace;letter-spacing:2px;}
+.agg-score{font-size:38px;font-weight:300;font-family:monospace;line-height:1.1;}
+.score-bar{width:100%;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden;}
+.score-bar.sm{height:5px;}
+.score-bar.md{height:7px;}
+.score-bar-fill{height:100%;border-radius:99px;transition:width 0.7s;}
+
+/* MACRO PANEL */
+.macro-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:20px;margin-bottom:20px;min-height:340px;}
+.macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+.macro-col-label{font-size:10px;font-family:monospace;letter-spacing:2px;margin-bottom:10px;}
+.macro-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px;color:#94a3b8;line-height:1.5;}
+.macro-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.macro-regime{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.regime-badge{padding:5px 12px;border-radius:20px;font-size:11px;font-family:monospace;border:1px solid;}
+
+/* IND TABLE */
+.ind-table{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin-bottom:20px;min-height:420px;}
+.ind-table-header{display:grid;grid-template-columns:2fr 0.7fr 1.1fr 0.9fr 1.8fr;padding:10px 18px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08);font-size:9px;font-family:monospace;letter-spacing:1.5px;color:#475569;gap:8px;}
+.ind-table-row{display:grid;grid-template-columns:2fr 0.7fr 1.1fr 0.9fr 1.8fr;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.05);gap:8px;align-items:center;cursor:pointer;transition:background 0.15s;}
+.ind-table-row:last-child{border-bottom:none;}
+.ind-table-row:hover{background:rgba(255,255,255,0.03);}
+.row-name{font-size:13px;color:#e2e8f0;}
+.row-fuel{font-size:10px;color:#475569;font-family:monospace;}
+.row-share{font-size:12px;font-family:monospace;color:#22d3a0;}
+.row-score-big{font-size:20px;font-family:monospace;font-weight:300;}
+.row-delta{font-size:10px;font-family:monospace;}
+.sparkbar-wrap{display:flex;gap:2px;align-items:flex-end;height:24px;margin-bottom:3px;}
+.sparkbar-col{flex:1;height:100%;display:flex;align-items:flex-end;}
+.sparkbar-fill{width:100%;border-radius:1px 1px 0 0;transition:all 0.2s;}
+.matrix-wrap{margin-top:20px;overflow-x:auto;}
+.matrix-label{font-size:10px;color:#475569;font-family:monospace;letter-spacing:2px;margin-bottom:10px;}
+.matrix-table{width:100%;border-collapse:collapse;font-size:11px;font-family:monospace;}
+.matrix-table th{padding:8px;text-align:center;color:#475569;font-weight:400;border-bottom:1px solid rgba(255,255,255,0.1);}
+.matrix-table th.active-col{color:#22d3a0;font-weight:600;}
+.matrix-table th:first-child{text-align:left;padding-left:14px;}
+.matrix-table td{padding:8px;text-align:center;}
+.matrix-table td:first-child{padding-left:14px;text-align:left;color:#94a3b8;}
+.matrix-table tr{border-bottom:1px solid rgba(255,255,255,0.04);}
+.matrix-table tr.avg-row{border-top:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.03);}
+.matrix-table tr.avg-row td:first-child{color:#f1f5f9;font-weight:600;}
+
+/* DETAIL */
+.ind-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.ind-sel-btn{padding:7px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#94a3b8;font-size:11px;font-family:monospace;transition:all 0.15s;}
+.ind-sel-btn.active{background:rgba(34,211,160,0.12);border-color:#22d3a0;color:#22d3a0;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.detail-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:20px;}
+.detail-card.full{grid-column:1 / -1;}
+.detail-label{font-size:10px;font-family:monospace;letter-spacing:2px;color:#475569;margin-bottom:12px;}
+.detail-title{font-size:22px;color:#f1f5f9;margin-bottom:4px;}
+.detail-fuel{font-size:11px;color:#64748b;font-family:monospace;}
+.detail-stats{display:flex;gap:14px;}
+.detail-stat-label{font-size:10px;color:#475569;font-family:monospace;margin-bottom:3px;}
+.detail-stat-val{font-size:28px;font-family:monospace;font-weight:300;}
+.detail-elast-desc{margin-top:14px;padding:12px;background:rgba(255,255,255,0.03);border-radius:6px;font-size:12px;color:#94a3b8;line-height:1.6;}
+.customer-item{padding:8px 12px;margin-bottom:5px;background:rgba(255,255,255,0.03);border-left:2px solid rgba(34,211,160,0.5);border-radius:0 5px 5px 0;font-size:12px;color:#cbd5e1;}
+.bs-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;}
+.bs-key{color:#64748b;font-family:monospace;}
+.bs-val{color:#e2e8f0;}
+.consumer-note{margin-top:10px;padding:10px;background:rgba(240,180,41,0.08);border-radius:6px;font-size:11px;color:#94a3b8;line-height:1.5;}
+.demand-bars{display:flex;gap:6px;align-items:flex-end;height:110px;}
+.demand-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;}
+.demand-bar-score{font-size:11px;font-family:monospace;}
+.demand-bar-inner{flex:1;width:100%;display:flex;align-items:flex-end;}
+.demand-bar-fill{width:100%;border-radius:3px 3px 0 0;transition:height 0.5s ease;}
+.demand-bar-label{font-size:9px;font-family:monospace;color:#475569;}
+.demand-bar-footer{margin-top:12px;display:flex;justify-content:space-between;font-size:10px;font-family:monospace;color:#475569;}
+.no-selection{text-align:center;padding:60px;color:#475569;font-family:monospace;}
+
+/* COMPANY TABLE */
+.company-table{width:100%;border-collapse:collapse;font-size:12px;}
+.company-table th{padding:8px 10px;text-align:left;font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace;border-bottom:1px solid rgba(255,255,255,0.08);font-weight:400;}
+.company-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;font-family:monospace;font-size:11px;}
+.company-table tr:last-child td{border-bottom:none;}
+.company-table tr:hover td{background:rgba(255,255,255,0.02);}
+.ticker-badge{background:rgba(34,211,160,0.1);color:#22d3a0;border:1px solid rgba(34,211,160,0.25);border-radius:4px;padding:2px 6px;font-size:10px;}
+.private-badge{background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.25);border-radius:4px;padding:2px 6px;font-size:10px;}
+
+/* SOURCES */
+.sources-meta{margin-bottom:20px;}
+.sources-meta p{font-size:12px;color:#64748b;font-family:monospace;line-height:1.7;margin-bottom:4px;}
+.source-category{margin-bottom:24px;}
+.source-cat-label{font-size:11px;font-family:monospace;letter-spacing:2px;color:#22d3a0;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid rgba(34,211,160,0.2);}
+.source-list{display:flex;flex-direction:column;gap:7px;}
+.source-ref{display:grid;grid-template-columns:1fr auto;gap:14px;padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:7px;transition:all 0.15s;align-items:start;color:inherit;}
+.source-ref:hover{background:rgba(34,211,160,0.05);border-color:rgba(34,211,160,0.3);}
+.source-title{font-size:13px;color:#e2e8f0;margin-bottom:3px;line-height:1.4;}
+.source-org{font-size:10px;font-family:monospace;color:#22d3a0;margin-bottom:5px;}
+.source-notes{font-size:11px;color:#64748b;line-height:1.5;}
+.source-arrow{font-size:10px;font-family:monospace;color:#475569;white-space:nowrap;padding-top:2px;}
+
+/* PROMPT */
+.prompt-wrap{max-width:800px;}
+.prompt-intro{margin-bottom:20px;padding:14px 18px;background:rgba(34,211,160,0.05);border:1px solid rgba(34,211,160,0.15);border-radius:7px;font-size:12px;color:#64748b;font-family:monospace;line-height:1.6;}
+.prompt-text{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-left:3px solid rgba(34,211,160,0.5);border-radius:0 7px 7px 0;padding:16px 18px;font-size:13px;color:#cbd5e1;line-height:1.8;}
+.prompt-text p{margin-bottom:10px;}
+.prompt-text p:last-child{margin-bottom:0;}
+.prompt-model{margin-top:24px;padding:12px 18px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:7px;display:flex;gap:28px;flex-wrap:wrap;}
+.prompt-model-item{font-size:11px;font-family:monospace;}
+.prompt-model-key{color:#475569;display:block;margin-bottom:2px;font-size:9px;letter-spacing:2px;}
+.prompt-model-val{color:#94a3b8;}
+
+/* INVESTOR TOOLS */
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:24px;}
+.inv-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px;}
+.inv-card-title{font-size:13px;color:#f1f5f9;font-weight:600;margin-bottom:4px;}
+.inv-card-sub{font-size:11px;color:#64748b;font-family:monospace;margin-bottom:14px;}
+.trade-idea{padding:10px 12px;margin-bottom:6px;border-radius:6px;font-size:12px;color:#cbd5e1;line-height:1.5;}
+.trade-idea.long{background:rgba(34,211,160,0.08);border-left:2px solid #22d3a0;}
+.trade-idea.short{background:rgba(239,68,68,0.08);border-left:2px solid #ef4444;}
+.trade-idea.hedge{background:rgba(240,180,41,0.08);border-left:2px solid #f0b429;}
+.trade-label{font-size:9px;letter-spacing:2px;font-family:monospace;display:block;margin-bottom:3px;}
+.corr-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;}
+.corr-row:last-child{border-bottom:none;}
+.corr-asset{color:#94a3b8;font-family:monospace;}
+.corr-bar-wrap{display:flex;align-items:center;gap:8px;flex:1;margin:0 12px;}
+.corr-bar-track{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;position:relative;}
+.corr-bar-fill{height:100%;border-radius:2px;position:absolute;top:0;}
+.corr-val{font-size:11px;font-family:monospace;font-weight:600;min-width:40px;text-align:right;}
+.watchlist-note{font-size:11px;color:#64748b;line-height:1.6;font-family:monospace;}
+
+/* FOOTER */
+.footer{padding:16px 32px;border-top:1px solid rgba(255,255,255,0.06);font-size:10px;color:#334155;font-family:monospace;}
+
+@media(max-width:700px){
+  .content{padding:14px;}
+  .header{padding:14px;}
+  .tabs{padding:0 14px;}
+  .wti-main{padding:10px 16px;}
+  .wti-slider-wrap{padding:10px 16px;}
+  .detail-grid{grid-template-columns:1fr;}
+  .detail-card.full{grid-column:1;}
+  .ind-table-header,.ind-table-row{grid-template-columns:1.5fr 0.5fr 1fr 0.5fr 1.5fr;}
+  .macro-grid{grid-template-columns:1fr;}
+}
+
+/* CUSTOMER SEGMENTS */
+.cust-row{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;overflow:hidden;transition:border-color 0.2s;}
+.cust-row:hover{border-color:rgba(34,211,160,0.35);}
+.cust-row-header{display:flex;align-items:center;}
+
+/* PLAYER CARDS WITH DONUT */
+.player-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:6px;}
+.player-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px;cursor:pointer;transition:border-color 0.2s;}
+.player-card:hover{border-color:rgba(34,211,160,0.35);}
+.player-card.expanded{border-color:rgba(34,211,160,0.5);background:rgba(34,211,160,0.04);}
+.player-card-top{display:flex;align-items:center;gap:10px;}
+.player-card-info{flex:1;min-width:0;}
+.player-name{font-size:12px;font-weight:600;color:#f1f5f9;line-height:1.2;}
+.player-ticker{font-size:10px;color:#22d3a0;font-family:monospace;margin-top:1px;}
+.player-cap{font-size:10px;color:#64748b;font-family:monospace;}
+.player-seg-pills{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px;}
+.player-seg-pill{font-size:8px;padding:1px 5px;border-radius:3px;font-family:monospace;}
+.player-seg-detail{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);}
+.player-seg-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.player-seg-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+.player-seg-label{font-size:10px;color:#94a3b8;flex:1;}
+.player-seg-bar-track{width:70px;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.player-seg-bar-fill{height:100%;border-radius:2px;}
+.player-seg-pct{font-size:10px;font-family:monospace;min-width:26px;text-align:right;}
+
+/* ETF PANEL */
+.etf-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px;margin-top:14px;}
+.etf-panel-title{font-size:10px;letter-spacing:2px;color:#475569;font-family:monospace;margin-bottom:14px;}
+.etf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;}
+.etf-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:12px;}
+.etf-ticker{font-size:16px;font-family:monospace;font-weight:600;color:#22d3a0;}
+.etf-name{font-size:10px;color:#94a3b8;margin:3px 0 6px;line-height:1.4;}
+.etf-corr-label{font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace;margin-bottom:4px;}
+.etf-corr-bar-track{height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;margin-bottom:4px;}
+.etf-corr-bar-fill{height:100%;border-radius:3px;}
+.etf-desc{font-size:10px;color:#64748b;font-style:italic;}
+.etf-corr-legend{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:12px;flex-wrap:wrap;}
+.etf-legend-item{display:flex;align-items:center;gap:5px;font-size:9px;color:#475569;font-family:monospace;}
+.etf-legend-dot{width:8px;height:8px;border-radius:2px;}
+
+
+/* INLINE SOURCE DROPDOWNS */
+.src-dropdown{margin-top:28px;border-top:1px solid rgba(255,255,255,0.06);padding-top:18px;}
+.src-dropdown-toggle{display:flex;align-items:center;gap:8px;background:none;border:none;color:#475569;font-family:monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:0;transition:color 0.2s;}
+.src-dropdown-toggle:hover{color:#94a3b8;}
+.src-dropdown-toggle .src-chev{font-size:9px;transition:transform 0.2s;display:inline-block;}
+.src-dropdown-body{display:none;margin-top:14px;}
+.src-dropdown-body.open{display:block;}
+.src-cat-label{font-size:10px;font-family:monospace;letter-spacing:2px;color:#22d3a0;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(34,211,160,0.15);}
+.src-ref-row{display:grid;grid-template-columns:1fr auto;gap:14px;padding:9px 12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:6px;margin-bottom:5px;align-items:start;text-decoration:none;color:inherit;transition:all 0.15s;}
+.src-ref-row:hover{background:rgba(34,211,160,0.05);border-color:rgba(34,211,160,0.25);}
+.src-ref-title{font-size:12px;color:#e2e8f0;margin-bottom:2px;line-height:1.4;}
+.src-ref-org{font-size:10px;font-family:monospace;color:#22d3a0;margin-bottom:3px;}
+.src-ref-notes{font-size:10px;color:#64748b;line-height:1.5;}
+.src-ref-arrow{font-size:10px;font-family:monospace;color:#475569;white-space:nowrap;padding-top:2px;}
+.src-group{margin-bottom:16px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <span class="header-label">🛢️ OiledUp — Macro Intelligence Desk</span>
+    <div class="header-divider"></div>
+  </div>
+  <h1>U.S. Oil Demand Intelligence — Macro Dashboard</h1>
+  <div class="header-sub">Iran-Hormuz supply shock · WTI scenario range $65–$120/bbl · March 2026</div>
+</div>
+
+<!-- SCENARIO SLIDER -->
+<div id="scenario-slider-bar" style="display:none;align-items:center;gap:20px;padding:10px 32px;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.2);flex-wrap:wrap;">
+  <span style="font-size:10px;letter-spacing:3px;color:#64748b;font-family:monospace;white-space:nowrap;">WTI SCENARIO ($/BBL)</span>
+  <input type="range" id="wti-slider" min="65" max="120" value="80" step="5" oninput="onSliderChange(this.value)" style="flex:1;min-width:200px;max-width:500px;">
+  <div id="slider-pill" style="font-size:18px;font-family:monospace;font-weight:300;color:#f1f5f9;min-width:52px;">$80</div>
+  <div id="slider-regime" style="font-size:11px;font-family:monospace;padding:4px 12px;border-radius:20px;border:1px solid;white-space:nowrap;min-width:220px;text-align:center;"></div>
+  <div id="slider-score" style="font-size:11px;font-family:monospace;color:#64748b;white-space:nowrap;min-width:140px;"></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('overview')">Industry Overview</button>
+  <button class="tab-btn" onclick="switchTab('scenario')">Scenario Analysis</button>
+  <button class="tab-btn" onclick="switchTab('detail')">Industry Deep Dive</button>
+  <button class="tab-btn" onclick="switchTab('investor')">Investor Tools</button>
+</div>
+
+<div class="content">
+  <div id="tab-overview" class="tab-panel active"></div>
+  <div id="tab-scenario" class="tab-panel">
+    <div class="price-selector">
+      <div class="label-sm" style="letter-spacing:2px;">SELECT WTI SCENARIO ($/BBL) — OR USE SLIDER ABOVE</div>
+      <div class="price-buttons" id="price-buttons"></div>
+    </div>
+    <div class="agg-card" id="agg-card"></div>
+    <div class="macro-panel" id="macro-panel"></div>
+    <div class="ind-table" id="scenario-table"></div>
+    <div class="matrix-wrap">
+      <div class="matrix-label">FULL SCENARIO MATRIX — ALL PRICE POINTS</div>
+      <table class="matrix-table" id="matrix-table"></table>
+    </div>
+  </div>
+  <div id="src-scenario-slot"></div>
+  </div>
+  <div id="tab-detail" class="tab-panel">
+    <div class="ind-selector" id="ind-selector"></div>
+    <div id="detail-content"><div class="no-selection">↑ Select an industry above to view deep dive</div></div>
+  </div>
+  <div id="tab-investor" class="tab-panel"></div>
+</div>
+
+<div class="footer">
+  Sources: EIA, IEA, OECD, Kpler, CSIS · Demand scores are model estimates · Not financial advice
+</div>
+
+<script>
+const PRICE_POINTS = [65,70,75,80,85,90,95,100,105,110,115,120];
+let selectedPrice = 80;
+let selectedIndustry = null;
+let expandedPlayer = null;
+
+const SEG_COLORS = ["#22d3a0","#f0b429","#fb923c","#a78bfa","#38bdf8","#f472b6","#4ade80"];
+
+const INDUSTRY_ETFS = {
+  "road-transport":[
+    {ticker:"IYT",name:"iShares Transportation Avg ETF",corr:0.61,desc:"Broad transport, diesel-exposed"},
+    {ticker:"FTXR",name:"First Trust Nasdaq Transport ETF",corr:0.58,desc:"Tech-tilted logistics & transport"},
+    {ticker:"XTN",name:"SPDR S&P Transportation ETF",corr:0.59,desc:"Equal-weight transport basket"},
+    {ticker:"DBXT",name:"Xtrackers S&P 500 Transport",corr:0.55,desc:"Large-cap transport subset"},
+  ],
+  "petrochemicals":[
+    {ticker:"XLB",name:"Materials Select Sector SPDR",corr:0.52,desc:"Broad materials; chem sub-sector"},
+    {ticker:"MATS",name:"ProShares DJ Brookfield Global Infrastructure",corr:0.48,desc:"Chem & infra blend"},
+    {ticker:"IYM",name:"iShares U.S. Basic Materials ETF",corr:0.54,desc:"Chemicals, plastics, materials"},
+    {ticker:"LYB",name:"LyondellBasell (direct)",corr:0.62,desc:"Pure-play plastics & refining"},
+  ],
+  "aviation":[
+    {ticker:"JETS",name:"U.S. Global Jets ETF",corr:-0.71,desc:"Pure-play airline ETF; inverse oil"},
+    {ticker:"AWAY",name:"ETFMG Travel Tech ETF",corr:-0.55,desc:"Travel tech + booking platforms"},
+    {ticker:"FLYU",name:"Defiance Hotel, Airline & Cruise ETF",corr:-0.64,desc:"Leisure travel basket"},
+    {ticker:"ITA",name:"iShares U.S. Aerospace & Defense",corr:0.21,desc:"Defense offsets airline drag"},
+  ],
+  "agriculture":[
+    {ticker:"MOO",name:"VanEck Agribusiness ETF",corr:0.38,desc:"Agribusiness; fertilizer & equipment"},
+    {ticker:"SOIL",name:"Global X Fertilizers/Potash ETF",corr:0.44,desc:"Fertilizer — oil feedstock link"},
+    {ticker:"WEAT",name:"Teucrium Wheat Fund",corr:0.29,desc:"Grain prices track energy costs"},
+    {ticker:"DBA",name:"Invesco DB Agriculture Fund",corr:0.33,desc:"Broad commodity agri basket"},
+  ],
+  "marine":[
+    {ticker:"BOAT",name:"SonicShares Global Shipping ETF",corr:0.55,desc:"Global shipping & tanker blend"},
+    {ticker:"BDRY",name:"Breakwave Dry Bulk Shipping ETF",corr:0.48,desc:"Dry bulk — commodity demand proxy"},
+    {ticker:"FRO",name:"Frontline (direct)",corr:0.72,desc:"Tanker pure-play, Hormuz proxy"},
+    {ticker:"INSW",name:"Int'l Seaways (direct)",corr:0.68,desc:"Product tanker direct play"},
+  ],
+  "manufacturing":[
+    {ticker:"XLI",name:"Industrials Select Sector SPDR",corr:0.41,desc:"Broad industrials ETF"},
+    {ticker:"VIS",name:"Vanguard Industrials ETF",corr:0.39,desc:"Low-cost industrial exposure"},
+    {ticker:"FXR",name:"First Trust Industrials/Producer Durables",corr:0.43,desc:"Factor-weighted industrials"},
+    {ticker:"PRN",name:"Invesco DWA Industrials Momentum ETF",corr:0.37,desc:"Momentum-factor industrials"},
+  ],
+  "government":[
+    {ticker:"ITA",name:"iShares U.S. Aerospace & Defense",corr:0.32,desc:"Defense budget — decoupled from oil"},
+    {ticker:"XAR",name:"SPDR S&P Aerospace & Defense ETF",corr:0.29,desc:"Equal-weight defense & aero"},
+    {ticker:"DFEN",name:"Direxion Daily Aerospace 3x Bull",corr:0.31,desc:"Leveraged defense exposure"},
+    {ticker:"PPA",name:"Invesco Aerospace & Defense ETF",corr:0.28,desc:"Broad A&D basket"},
+  ],
+};
+
+// Extended 10-player data per industry with customer segment distributions
+const INDUSTRY_PLAYERS = {
+  "road-transport":[
+    {name:"J.B. Hunt Transport",ticker:"JBHT",cap:"$16B",segs:{"E-commerce":30,"Retail SC":28,"Food Dist":18,"Consumers":14,"Gov/Infra":10}},
+    {name:"Old Dominion Freight",ticker:"ODFL",cap:"$42B",segs:{"Retail SC":35,"Mfg/Ind":25,"E-commerce":22,"Food Dist":12,"Gov":6}},
+    {name:"XPO Logistics",ticker:"XPO",cap:"$12B",segs:{"Retail SC":30,"E-commerce":28,"Mfg/Ind":22,"Food Dist":12,"Gov":8}},
+    {name:"Uber Freight",ticker:"UBER",cap:"$130B",segs:{"E-commerce":38,"Retail SC":28,"Food Dist":20,"Consumers":10,"Gov":4}},
+    {name:"Knight-Swift",ticker:"KNX",cap:"$7B",segs:{"Retail SC":32,"Mfg/Ind":28,"Food Dist":20,"E-commerce":14,"Gov":6}},
+    {name:"Werner Enterprises",ticker:"WERN",cap:"$2B",segs:{"Retail SC":35,"Food Dist":25,"E-commerce":20,"Mfg/Ind":15,"Gov":5}},
+    {name:"Ryder System",ticker:"R",cap:"$5B",segs:{"Retail SC":28,"Mfg/Ind":30,"E-commerce":20,"Food Dist":14,"Gov":8}},
+    {name:"Saia Inc.",ticker:"SAIA",cap:"$7B",segs:{"Mfg/Ind":38,"Retail SC":30,"E-commerce":18,"Food Dist":10,"Gov":4}},
+    {name:"ArcBest Corp",ticker:"ARCB",cap:"$2B",segs:{"Mfg/Ind":40,"Retail SC":28,"E-commerce":16,"Food Dist":10,"Gov":6}},
+    {name:"Heartland Express",ticker:"HTLD",cap:"$0.7B",segs:{"Retail SC":40,"Mfg/Ind":30,"E-commerce":14,"Food Dist":12,"Gov":4}},
+  ],
+  "petrochemicals":[
+    {name:"LyondellBasell",ticker:"LYB",cap:"$24B",segs:{"Packaging":32,"Agri/Fert":20,"Healthcare":18,"Apparel":15,"Auto":15}},
+    {name:"Dow Inc.",ticker:"DOW",cap:"$35B",segs:{"Packaging":30,"Agri/Fert":22,"Construction":20,"Apparel":16,"Auto":12}},
+    {name:"Eastman Chemical",ticker:"EMN",cap:"$8B",segs:{"Healthcare":28,"Packaging":25,"Agri/Fert":22,"Auto":15,"Apparel":10}},
+    {name:"Celanese",ticker:"CE",cap:"$7B",segs:{"Auto":30,"Healthcare":25,"Packaging":22,"Apparel":14,"Agri":9}},
+    {name:"Nutrien",ticker:"NTR",cap:"$28B",segs:{"Agri/Fert":75,"Packaging":10,"Food Proc":10,"Mining":3,"Other":2}},
+    {name:"BASF",ticker:"BAS.DE",cap:"€40B",segs:{"Agri/Fert":28,"Auto":24,"Packaging":20,"Healthcare":16,"Apparel":12}},
+    {name:"Huntsman Corp",ticker:"HUN",cap:"$2B",segs:{"Construction":32,"Auto":26,"Packaging":20,"Healthcare":14,"Apparel":8}},
+    {name:"Westlake Corp",ticker:"WLK",cap:"$12B",segs:{"Construction":40,"Packaging":28,"Auto":16,"Healthcare":10,"Other":6}},
+    {name:"Tronox Holdings",ticker:"TROX",cap:"$1.5B",segs:{"Packaging":35,"Construction":28,"Auto":18,"Healthcare":12,"Other":7}},
+    {name:"Innospec",ticker:"IOSP",cap:"$2B",segs:{"Fuel Additives":45,"Agri/Fert":22,"Personal Care":18,"Healthcare":10,"Other":5}},
+  ],
+  "aviation":[
+    {name:"Delta Air Lines",ticker:"DAL",cap:"$25B",segs:{"Leisure":45,"Business":28,"Cargo":18,"Gov/Mil":9}},
+    {name:"United Airlines",ticker:"UAL",cap:"$18B",segs:{"Leisure":42,"Business":30,"Cargo":20,"Gov/Mil":8}},
+    {name:"Southwest Airlines",ticker:"LUV",cap:"$17B",segs:{"Leisure":62,"Business":28,"Cargo":8,"Gov/Mil":2}},
+    {name:"FedEx",ticker:"FDX",cap:"$55B",segs:{"Cargo":72,"Business":18,"Leisure":6,"Gov/Mil":4}},
+    {name:"Boeing",ticker:"BA",cap:"$100B",segs:{"Airlines":55,"Gov/Mil":35,"Cargo":8,"MRO":2}},
+    {name:"American Airlines",ticker:"AAL",cap:"$9B",segs:{"Leisure":48,"Business":30,"Cargo":14,"Gov/Mil":8}},
+    {name:"Alaska Air Group",ticker:"ALK",cap:"$7B",segs:{"Leisure":55,"Business":30,"Cargo":12,"Gov/Mil":3}},
+    {name:"Spirit Airlines",ticker:"SAVE",cap:"$0.3B",segs:{"Leisure":85,"Business":12,"Cargo":3,"Gov/Mil":0}},
+    {name:"Airbus",ticker:"AIR.PA",cap:"€100B",segs:{"Airlines":60,"Gov/Mil":28,"Cargo":9,"MRO":3}},
+    {name:"Heico Corp",ticker:"HEI",cap:"$22B",segs:{"MRO":55,"Gov/Mil":30,"Airlines":10,"Other":5}},
+  ],
+  "agriculture":[
+    {name:"Archer-Daniels-Midland",ticker:"ADM",cap:"$22B",segs:{"Food Proc":30,"Grocery":25,"Commodity":28,"Restaurant":12,"Export":5}},
+    {name:"Deere & Company",ticker:"DE",cap:"$115B",segs:{"Farms":58,"Gov/Infra":18,"Food Proc":14,"Export":7,"Other":3}},
+    {name:"Tyson Foods",ticker:"TSN",cap:"$17B",segs:{"Grocery":38,"Restaurant":30,"Food Proc":22,"Export":8,"Other":2}},
+    {name:"Bunge Global",ticker:"BG",cap:"$11B",segs:{"Commodity":40,"Food Proc":25,"Export":22,"Grocery":10,"Other":3}},
+    {name:"Nutrien",ticker:"NTR",cap:"$28B",segs:{"Farms":75,"Food Proc":12,"Export":8,"Gov":3,"Other":2}},
+    {name:"CNH Industrial",ticker:"CNH",cap:"$14B",segs:{"Farms":60,"Construction":20,"Gov":10,"Export":7,"Other":3}},
+    {name:"Corteva (seed/chem)",ticker:"CTVA",cap:"$32B",segs:{"Farms":80,"Food Proc":10,"Export":7,"Gov":2,"Other":1}},
+    {name:"Mosaic Company",ticker:"MOS",cap:"$9B",segs:{"Farms":70,"Export":18,"Food Proc":8,"Other":4}},
+    {name:"CF Industries",ticker:"CF",cap:"$14B",segs:{"Farms":72,"Export":18,"Food Proc":7,"Other":3}},
+    {name:"FMC Corporation",ticker:"FMC",cap:"$4B",segs:{"Farms":78,"Food Proc":10,"Export":8,"Gov":2,"Other":2}},
+  ],
+  "marine":[
+    {name:"Frontline",ticker:"FRO",cap:"$4B",segs:{"Major IOCs":38,"NOCs":32,"Trading Cos":20,"Gov/Military":10}},
+    {name:"Int'l Seaways",ticker:"INSW",cap:"$1.5B",segs:{"Major IOCs":35,"NOCs":28,"Trading Cos":24,"Gov/Military":13}},
+    {name:"Tsakos Energy Nav.",ticker:"TEN",cap:"$0.8B",segs:{"Major IOCs":40,"NOCs":30,"Trading Cos":22,"Gov/Military":8}},
+    {name:"Scorpio Tankers",ticker:"STNG",cap:"$2B",segs:{"Refiners":45,"Trading Cos":30,"Major IOCs":18,"Gov/Military":7}},
+    {name:"Nordic American",ticker:"NAT",cap:"$0.5B",segs:{"Major IOCs":42,"NOCs":30,"Trading Cos":20,"Gov/Military":8}},
+    {name:"DHT Holdings",ticker:"DHT",cap:"$1.5B",segs:{"Major IOCs":38,"NOCs":35,"Trading Cos":20,"Gov/Military":7}},
+    {name:"Euronav",ticker:"EURN",cap:"$2B",segs:{"Major IOCs":36,"NOCs":34,"Trading Cos":22,"Gov/Military":8}},
+    {name:"Teekay Corp",ticker:"TK",cap:"$0.8B",segs:{"NOCs":38,"Major IOCs":32,"Trading Cos":20,"Gov/Military":10}},
+    {name:"Ardmore Shipping",ticker:"ASC",cap:"$0.4B",segs:{"Refiners":42,"Trading Cos":32,"Major IOCs":18,"Gov/Military":8}},
+    {name:"Diamond S Shipping",ticker:"DSSI",cap:"$0.3B",segs:{"Refiners":44,"Trading Cos":30,"Major IOCs":18,"Gov/Military":8}},
+  ],
+  "manufacturing":[
+    {name:"General Electric",ticker:"GE",cap:"$180B",segs:{"Aerospace":42,"Power Gen":28,"Healthcare":18,"Oil & Gas":12}},
+    {name:"3M Company",ticker:"MMM",cap:"$45B",segs:{"Industrial":35,"Healthcare":28,"Consumer":22,"Gov/Defense":15}},
+    {name:"Eaton Corporation",ticker:"ETN",cap:"$85B",segs:{"Industrial":38,"Aerospace":22,"Data Center":20,"Gov/Defense":20}},
+    {name:"Parker Hannifin",ticker:"PH",cap:"$70B",segs:{"Industrial":40,"Aerospace":25,"Oil & Gas":20,"Gov/Defense":15}},
+    {name:"Emerson Electric",ticker:"EMR",cap:"$55B",segs:{"Industrial":45,"Oil & Gas":28,"Gov/Defense":15,"HVAC":12}},
+    {name:"Honeywell",ticker:"HON",cap:"$130B",segs:{"Aerospace":30,"Industrial":30,"Oil & Gas":22,"Gov/Defense":18}},
+    {name:"Illinois Tool Works",ticker:"ITW",cap:"$70B",segs:{"Industrial":45,"Auto":25,"Food Equip":18,"Consumer":12}},
+    {name:"Rockwell Automation",ticker:"ROK",cap:"$28B",segs:{"Industrial":52,"Oil & Gas":22,"Food/Bev":14,"Gov":12}},
+    {name:"IDEX Corporation",ticker:"IEX",cap:"$17B",segs:{"Industrial":48,"Oil & Gas":24,"Fire/Safety":16,"Gov":12}},
+    {name:"Roper Technologies",ticker:"ROP",cap:"$55B",segs:{"Healthcare":30,"Industrial":28,"Gov/Defense":22,"Energy":20}},
+  ],
+  "government":[
+    {name:"Lockheed Martin",ticker:"LMT",cap:"$105B",segs:{"US DoD":70,"Allied Gov":20,"NASA":6,"Other":4}},
+    {name:"Kinder Morgan",ticker:"KMI",cap:"$24B",segs:{"E&P Co's":38,"Utilities":22,"Refiners":20,"Gov/Mil":12,"Ind":8}},
+    {name:"Northrop Grumman",ticker:"NOC",cap:"$65B",segs:{"US DoD":72,"Allied Gov":18,"NASA":7,"Other":3}},
+    {name:"Raytheon Technologies",ticker:"RTX",cap:"$135B",segs:{"US DoD":55,"Commercial Aero":25,"Allied Gov":14,"Other":6}},
+    {name:"General Dynamics",ticker:"GD",cap:"$65B",segs:{"US DoD":62,"Allied Gov":22,"Aerospace":12,"Other":4}},
+    {name:"Fluor Corporation",ticker:"FLR",cap:"$5B",segs:{"Gov/Infra":40,"Energy":28,"Mining":18,"Industrial":14}},
+    {name:"SAIC",ticker:"SAIC",cap:"$6B",segs:{"US DoD":78,"Gov Civil":16,"Intel":4,"Other":2}},
+    {name:"Leidos Holdings",ticker:"LDOS",cap:"$20B",segs:{"US DoD":55,"Gov Civil":28,"Intel":12,"Commercial":5}},
+    {name:"Booz Allen Hamilton",ticker:"BAH",cap:"$16B",segs:{"US DoD":42,"Gov Civil":32,"Intel":20,"Commercial":6}},
+    {name:"ExxonMobil (Lubricants)",ticker:"XOM",cap:"$490B",segs:{"Industrial":32,"Retail Fuel":18,"Gov/Defense":15,"Chemicals":25,"Power":10}},
+  ],
+};
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+
+const INDUSTRIES = [
+  {
+    id:"road-transport", name:"Road Transportation", icon:"🚛",
+    oilSharePct:49, oilType:"Gasoline / Diesel",
+    customerSegments:[
+      {name:"Consumers — Commuting & Personal",pct:38,
+        liquidity:"Moderate",currentRatio:null,debtToEquity:"High household debt (~$21k avg non-mortgage)",marginPct:null,
+        elasticity:0.12,elasticityLabel:"Very Inelastic",
+        note:"~130M US workers commute daily. ~$200/mo gas spend. EV adoption is only long-run relief valve. Savings ~$8k median. Gasoline is a necessity.",
+        tickers:["UBER","LYFT","F","GM"]},
+      {name:"E-commerce Fulfillment",pct:22,
+        liquidity:"Strong",currentRatio:1.5,debtToEquity:"Low-Moderate",marginPct:"2–4% net (logistics arms)",
+        elasticity:0.1,elasticityLabel:"Highly Inelastic",
+        note:"Amazon, FedEx, UPS move packages regardless of fuel cost — they surcharge and pass through. Last-mile is only substitutable over years (drones, rail).",
+        tickers:["AMZN","FDX","UPS"]},
+      {name:"Retail Supply Chains",pct:25,
+        liquidity:"Moderate-Strong",currentRatio:1.3,debtToEquity:"Moderate (1–2x)",marginPct:"2–5%",
+        elasticity:0.18,elasticityLabel:"Inelastic",
+        note:"Walmart, Target, Costco embed fuel costs in COGS. Margin pressure real but demand for essential goods inelastic. Premium SKUs trade down.",
+        tickers:["WMT","TGT","COST","KR"]},
+      {name:"Food & Grocery Distribution",pct:15,
+        liquidity:"Moderate",currentRatio:1.2,debtToEquity:"Moderate (1.5–2.5x)",marginPct:"1–3%",
+        elasticity:0.08,elasticityLabel:"Highly Inelastic",
+        note:"Cold chain logistics for perishables are non-negotiable. Sysco, US Foods pass costs to restaurants. Thin-margin distributors most exposed.",
+        tickers:["SYY","USFD","PFGC"]},
+    ],
+    companies:[
+      {name:"J.B. Hunt Transport",ticker:"JBHT",type:"public",mcap:"$16B",role:"Trucking & intermodal, major diesel consumer",
+       currentRatio:1.1,debtToEquity:"High (3x)",margin:"4%",liquidity:"Thin"},
+      {name:"Old Dominion Freight",ticker:"ODFL",type:"public",mcap:"$42B",role:"LTL trucking, ~$1B+ annual fuel spend",
+       currentRatio:1.2,debtToEquity:"Low (0.3x)",margin:"20%",liquidity:"Strong"},
+      {name:"Union Pacific",ticker:"UNP",type:"public",mcap:"$140B",role:"Freight rail — diesel-heavy, key logistics backbone",
+       currentRatio:0.9,debtToEquity:"Very High (5x)",margin:"28%",liquidity:"Moderate"},
+      {name:"C.H. Robinson",ticker:"CHRW",type:"public",mcap:"$11B",role:"Freight brokerage, asset-light",
+       currentRatio:1.4,debtToEquity:"Moderate (1.5x)",margin:"2%",liquidity:"Moderate"},
+      {name:"XPO Logistics",ticker:"XPO",type:"public",mcap:"$11B",role:"LTL trucking, European exposure",
+       currentRatio:1.0,debtToEquity:"High (4x)",margin:"3%",liquidity:"Thin"},
+      {name:"Knight-Swift Transport",ticker:"KNX",type:"public",mcap:"$7B",role:"Truckload carrier, largest in US by fleet size",
+       currentRatio:1.2,debtToEquity:"Moderate (1.8x)",margin:"5%",liquidity:"Moderate"},
+      {name:"Werner Enterprises",ticker:"WERN",type:"public",mcap:"$2B",role:"Truckload specialist, temperature-sensitive freight",
+       currentRatio:1.1,debtToEquity:"Low (0.4x)",margin:"5%",liquidity:"Moderate"},
+      {name:"Saia Inc.",ticker:"SAIA",type:"public",mcap:"$7B",role:"LTL regional carrier, Southern/Midwest focus",
+       currentRatio:1.0,debtToEquity:"Low (0.5x)",margin:"8%",liquidity:"Moderate"},
+      {name:"Ryder System",ticker:"R",type:"public",mcap:"$5B",role:"Fleet management & supply chain solutions",
+       currentRatio:0.9,debtToEquity:"High (3.5x)",margin:"4%",liquidity:"Thin"},
+      {name:"Love's Travel Stops",ticker:"—",type:"private",mcap:"Private",role:"Largest truck stop operator in the US, diesel retail bellwether",
+       currentRatio:null,debtToEquity:"Private",margin:"~3%",liquidity:"Moderate"},
+    ],
+    balanceSheet:{sectorLiquidity:"Thin-Moderate",avgCurrentRatio:1.1,debtToEquity:"Moderate-High (1.5–4x)",marginPct:"3–8% (rail higher)",consumerLiquidity:"Moderate — ~$8k avg savings, ~$200/mo gas spend"},
+    elasticity:{score:0.15,label:"Very Inelastic",desc:"No short-term substitute for most trips. Long-run elasticity improves with EVs/WFH. Trucking has near-zero short-term alternatives."},
+    demandScores:{65:100,70:98,75:94,80:88,85:81,90:74,95:66,100:58,105:51,110:44,115:38,120:33},
+  },
+  {
+    id:"petrochemicals", name:"Petrochemicals / Plastics", icon:"⚗️",
+    oilSharePct:14, oilType:"Naphtha / NGLs",
+    customerSegments:[
+      {name:"Packaging & Consumer Goods",pct:32,
+        liquidity:"Strong",currentRatio:1.5,debtToEquity:"Moderate (1–2x)",marginPct:"10–18%",
+        elasticity:0.15,elasticityLabel:"Very Inelastic",
+        note:"P&G, Unilever, Amazon use petrochemical-derived plastics in virtually every product. Substitution (glass, paper) takes years and raises costs.",
+        tickers:["PG","UL","AMZN","CCL"]},
+      {name:"Agriculture / Fertilizers",pct:28,
+        liquidity:"Moderate",currentRatio:1.3,debtToEquity:"Moderate (1.5x)",marginPct:"4–10%",
+        elasticity:0.1,elasticityLabel:"Highly Inelastic",
+        note:"Ammonia and urea fertilizers derived from natural gas/naphtha. Food production depends on it. Demand near-fixed — food security overrides cost.",
+        tickers:["NTR","MOS","CF","ICL"]},
+      {name:"Healthcare & Single-Use",pct:18,
+        liquidity:"Very Strong",currentRatio:2.0,debtToEquity:"Low (0.5x)",marginPct:"15–30%",
+        elasticity:0.05,elasticityLabel:"Highly Inelastic",
+        note:"Syringes, IV bags, gloves, surgical instruments — all petrochemical-derived. Healthcare demand is the single most inelastic end-use of oil.",
+        tickers:["ABT","BDX","MDT","SYK"]},
+      {name:"Apparel / Synthetic Fibers",pct:22,
+        liquidity:"Moderate",currentRatio:1.2,debtToEquity:"Moderate (1–2x)",marginPct:"5–12%",
+        elasticity:0.4,elasticityLabel:"Moderately Elastic",
+        note:"Polyester, nylon, spandex are oil-derived. Fast fashion sensitive to input cost spikes. Consumers can defer apparel; brands can shift to natural fibers over time.",
+        tickers:["NKE","HM-B.ST","ADDYY","PVH"]},
+    ],
+    companies:[
+      {name:"LyondellBasell",ticker:"LYB",type:"public",mcap:"$24B",role:"World's largest plastics, chemicals & refining company",
+       currentRatio:1.3,debtToEquity:"Moderate (2x)",margin:"7%",liquidity:"Moderate"},
+      {name:"Dow Inc.",ticker:"DOW",type:"public",mcap:"$35B",role:"Ethylene, polyethylene, packaging materials",
+       currentRatio:1.4,debtToEquity:"Moderate (1.8x)",margin:"4%",liquidity:"Moderate"},
+      {name:"Eastman Chemical",ticker:"EMN",type:"public",mcap:"$8B",role:"Specialty chemicals, plastics additives",
+       currentRatio:1.6,debtToEquity:"Moderate (1.5x)",margin:"8%",liquidity:"Moderate"},
+      {name:"Celanese",ticker:"CE",type:"public",mcap:"$7B",role:"Engineered materials, acetyl products",
+       currentRatio:1.3,debtToEquity:"High (3x)",margin:"10%",liquidity:"Thin"},
+      {name:"Nutrien",ticker:"NTR",type:"public",mcap:"$28B",role:"World's largest fertilizer producer — natural gas/oil feedstock",
+       currentRatio:1.4,debtToEquity:"Low (0.8x)",margin:"12%",liquidity:"Moderate"},
+      {name:"BASF",ticker:"BAS.DE",type:"public",mcap:"€40B",role:"Largest chemical company globally, major naphtha user",
+       currentRatio:1.3,debtToEquity:"Moderate (1.2x)",margin:"3%",liquidity:"Moderate"},
+      {name:"Huntsman Corporation",ticker:"HUN",type:"public",mcap:"$2B",role:"Polyurethanes & differentiated chemicals",
+       currentRatio:1.8,debtToEquity:"Moderate (1.6x)",margin:"4%",liquidity:"Moderate"},
+      {name:"Westlake Corporation",ticker:"WLK",type:"public",mcap:"$12B",role:"PVC, chlorine, vinyls — construction & packaging",
+       currentRatio:2.2,debtToEquity:"Low (0.5x)",margin:"12%",liquidity:"Strong"},
+      {name:"Tronox Holdings",ticker:"TROX",type:"public",mcap:"$1.5B",role:"Titanium dioxide — coatings, plastics pigment",
+       currentRatio:1.7,debtToEquity:"High (3.5x)",margin:"6%",liquidity:"Thin"},
+      {name:"Innospec Inc.",ticker:"IOSP",type:"public",mcap:"$2B",role:"Fuel additives & specialty chemicals",
+       currentRatio:2.1,debtToEquity:"Low (0.2x)",margin:"9%",liquidity:"Strong"},
+    ],
+    balanceSheet:{sectorLiquidity:"Moderate",avgCurrentRatio:1.6,debtToEquity:"Moderate (1.2–3x)",marginPct:"4–12%",consumerLiquidity:"Indirect — cost embedded in finished goods"},
+    elasticity:{score:0.2,label:"Inelastic",desc:"Plastics are embedded in virtually every manufactured good. Substitutes exist but take years to scale. Short-run demand very sticky."},
+    demandScores:{65:100,70:97,75:93,80:88,85:83,90:77,95:70,100:63,105:57,110:51,115:45,120:40},
+  },
+  {
+    id:"aviation", name:"Aviation", icon:"✈️",
+    oilSharePct:7, oilType:"Jet Fuel (Kerosene)",
+    customerSegments:[
+      {name:"Leisure Travelers",pct:45,
+        liquidity:"Varies",currentRatio:null,debtToEquity:"High household debt",marginPct:null,
+        elasticity:0.6,elasticityLabel:"Elastic",
+        note:"Leisure travel is purely discretionary. At $90+/bbl, ticket prices rise 15–25% and bookings fall sharply. Low-income travelers drop out first.",
+        tickers:["CCL","BKNG","EXPE","ABNB"]},
+      {name:"Business Travelers",pct:28,
+        liquidity:"Strong",currentRatio:1.8,debtToEquity:"Varies by company",marginPct:"High (corporate margins)",
+        elasticity:0.2,elasticityLabel:"Inelastic",
+        note:"Corporate T&E budgets are sticky — business travel is essential for deals, client management. Video conferencing is only partial substitute.",
+        tickers:["MSFT","GS","JPM","BA"]},
+      {name:"Air Cargo / E-commerce",pct:18,
+        liquidity:"Strong",currentRatio:1.5,debtToEquity:"Moderate",marginPct:"5–12%",
+        elasticity:0.15,elasticityLabel:"Very Inelastic",
+        note:"FedEx, UPS, DHL have no alternative to air for time-critical freight. Fuel surcharges pass costs through. E-commerce drives structural demand.",
+        tickers:["FDX","UPS","AMZN","DHL.DE"]},
+      {name:"Tourism & Hospitality",pct:9,
+        liquidity:"Thin-Moderate",currentRatio:1.0,debtToEquity:"High (3–5x)",marginPct:"5–15%",
+        elasticity:0.55,elasticityLabel:"Elastic",
+        note:"Destination tourism collapses faster than domestic travel. Hotels, cruise lines, theme parks all downstream of aviation demand.",
+        tickers:["MAR","HLT","DIS","RCL"]},
+    ],
+    companies:[
+      {name:"Delta Air Lines",ticker:"DAL",type:"public",mcap:"$25B",role:"Largest US carrier by revenue, ~$8B annual fuel spend",
+       currentRatio:0.7,debtToEquity:"Very High (8x)",margin:"5%",liquidity:"Stressed"},
+      {name:"United Airlines",ticker:"UAL",type:"public",mcap:"$18B",role:"Major international exposure, high fuel cost sensitivity",
+       currentRatio:0.8,debtToEquity:"Very High (7x)",margin:"4%",liquidity:"Stressed"},
+      {name:"Southwest Airlines",ticker:"LUV",type:"public",mcap:"$17B",role:"Domestic-focused, historically fuel-hedged",
+       currentRatio:1.0,debtToEquity:"High (3x)",margin:"2%",liquidity:"Thin"},
+      {name:"FedEx",ticker:"FDX",type:"public",mcap:"$55B",role:"Air freight critical for e-commerce; jet fuel ~30% of costs",
+       currentRatio:1.4,debtToEquity:"Moderate (1.5x)",margin:"4%",liquidity:"Moderate"},
+      {name:"Boeing",ticker:"BA",type:"public",mcap:"$100B",role:"Aircraft OEM — demand signal for long-term aviation capex",
+       currentRatio:1.1,debtToEquity:"Very High (negative equity)",margin:"-2%",liquidity:"Thin"},
+      {name:"Airbus",ticker:"AIR.PA",type:"public",mcap:"€100B",role:"Duopoly OEM, backlog as proxy for long-term demand",
+       currentRatio:1.1,debtToEquity:"Low (0.5x)",margin:"5%",liquidity:"Moderate"},
+      {name:"American Airlines",ticker:"AAL",type:"public",mcap:"$9B",role:"3rd largest US carrier, highest debt load in sector",
+       currentRatio:0.6,debtToEquity:"Very High (negative equity)",margin:"3%",liquidity:"Stressed"},
+      {name:"Alaska Air Group",ticker:"ALK",type:"public",mcap:"$7B",role:"West Coast focus, historically best-managed balance sheet",
+       currentRatio:0.9,debtToEquity:"High (3.5x)",margin:"4%",liquidity:"Thin"},
+      {name:"Spirit Airlines",ticker:"SAVE",type:"public",mcap:"$0.3B",role:"Ultra-low-cost carrier, highest fuel cost as % of revenue",
+       currentRatio:0.5,debtToEquity:"Very High (10x)",margin:"-8%",liquidity:"Stressed"},
+      {name:"Heico Corporation",ticker:"HEI",type:"public",mcap:"$22B",role:"Aviation MRO parts — counter-cyclical to new aircraft orders",
+       currentRatio:1.6,debtToEquity:"Moderate (1.8x)",margin:"14%",liquidity:"Strong"},
+    ],
+    balanceSheet:{sectorLiquidity:"Stressed",avgCurrentRatio:0.97,debtToEquity:"Very High (3–10x for carriers)",marginPct:"-2% to 14% (wide range)",consumerLiquidity:"Discretionary — leisure travelers cut fast; business more resilient"},
+    elasticity:{score:0.4,label:"Moderately Elastic",desc:"Leisure demand falls sharply on ticket price hikes. Business travel more resilient. Air cargo has no practical substitute."},
+    demandScores:{65:100,70:95,75:87,80:77,85:65,90:54,95:44,100:35,105:28,110:22,115:17,120:13},
+  },
+  {
+    id:"agriculture", name:"Agriculture / Food", icon:"🌾",
+    oilSharePct:6, oilType:"Diesel + Fertilizer inputs",
+    customerSegments:[
+      {name:"Grocery Chains",pct:30,
+        liquidity:"Moderate-Strong",currentRatio:1.3,debtToEquity:"Moderate (1–2x)",marginPct:"1–3%",
+        elasticity:0.1,elasticityLabel:"Highly Inelastic",
+        note:"Kroger, Costco, Whole Foods pass food price increases to consumers. Grocery demand is non-discretionary. Brand trade-down (private label) accelerates.",
+        tickers:["KR","COST","WMT","ACI"]},
+      {name:"Food Processors",pct:28,
+        liquidity:"Moderate",currentRatio:1.2,debtToEquity:"Moderate (1.5–2x)",marginPct:"3–8%",
+        elasticity:0.12,elasticityLabel:"Very Inelastic",
+        note:"Tyson, ConAgra, ADM absorb energy cost increases then pass through. Protein and grain processing can't be meaningfully reduced — food is essential.",
+        tickers:["TSN","CAG","ADM","BG"]},
+      {name:"Restaurant Chains",pct:22,
+        liquidity:"Moderate",currentRatio:1.0,debtToEquity:"High (3–5x)",marginPct:"5–15%",
+        elasticity:0.35,elasticityLabel:"Moderately Elastic",
+        note:"Fast food somewhat inelastic (value meals), full-service restaurants more elastic. Consumers trade down to QSR. Delivery costs rise with fuel.",
+        tickers:["MCD","YUM","CMG","DRI"]},
+      {name:"Global Commodity Traders",pct:20,
+        liquidity:"Strong",currentRatio:1.5,debtToEquity:"Moderate (1–2x)",marginPct:"1–3% (huge volumes)",
+        elasticity:0.08,elasticityLabel:"Highly Inelastic",
+        note:"Cargill, ADM, Bunge trade global grain regardless of energy cost — they pass through and benefit from price volatility. Massive balance sheets.",
+        tickers:["ADM","BG","ARNC"]},
+    ],
+    companies:[
+      {name:"Archer-Daniels-Midland",ticker:"ADM",type:"public",mcap:"$22B",role:"Global grain trader, food ingredients, biofuels",
+       currentRatio:1.4,debtToEquity:"Moderate (0.8x)",margin:"2%",liquidity:"Moderate"},
+      {name:"Deere & Company",ticker:"DE",type:"public",mcap:"$115B",role:"Agricultural equipment — diesel consumption proxy",
+       currentRatio:1.7,debtToEquity:"High (5x — captive finance)",margin:"15%",liquidity:"Moderate"},
+      {name:"Tyson Foods",ticker:"TSN",type:"public",mcap:"$17B",role:"Protein processing — fuel-intensive cold chain",
+       currentRatio:1.3,debtToEquity:"Moderate (1.2x)",margin:"1%",liquidity:"Thin"},
+      {name:"Bunge Global",ticker:"BG",type:"public",mcap:"$11B",role:"Oilseed processing, grain origination, fertilizer distribution",
+       currentRatio:1.4,debtToEquity:"Moderate (0.9x)",margin:"2%",liquidity:"Moderate"},
+      {name:"Cargill",ticker:"—",type:"private",mcap:"~$165B est.",role:"World's largest private company, grain/food/agro trading",
+       currentRatio:null,debtToEquity:"Moderate",margin:"~2%",liquidity:"Strong"},
+      {name:"Koch Fertilizer",ticker:"—",type:"private",mcap:"~$100B est.",role:"Major fertilizer producer, energy inputs",
+       currentRatio:null,debtToEquity:"Low",margin:"Private",liquidity:"Strong"},
+      {name:"Nutrien",ticker:"NTR",type:"public",mcap:"$28B",role:"World's largest crop nutrient company — natural gas feedstock",
+       currentRatio:1.4,debtToEquity:"Low (0.8x)",margin:"12%",liquidity:"Moderate"},
+      {name:"Corteva Agriscience",ticker:"CTVA",type:"public",mcap:"$32B",role:"Seeds & crop protection — fuel-intensive distribution",
+       currentRatio:1.6,debtToEquity:"Low (0.6x)",margin:"9%",liquidity:"Strong"},
+      {name:"Mosaic Company",ticker:"MOS",type:"public",mcap:"$9B",role:"Potash & phosphate fertilizers — mining diesel intensity",
+       currentRatio:1.8,debtToEquity:"Low (0.7x)",margin:"8%",liquidity:"Moderate"},
+      {name:"CF Industries",ticker:"CF",type:"public",mcap:"$14B",role:"Nitrogen fertilizers — natural gas is primary cost input",
+       currentRatio:1.5,debtToEquity:"Moderate (1.2x)",margin:"18%",liquidity:"Strong"},
+    ],
+    balanceSheet:{sectorLiquidity:"Moderate-Strong",avgCurrentRatio:1.52,debtToEquity:"Low-Moderate (0.6–2x, higher for Deere captive)",marginPct:"2–18% (fertilizers highest)",consumerLiquidity:"Non-discretionary — food budgets absorb shocks but squeeze other spending"},
+    elasticity:{score:0.1,label:"Highly Inelastic",desc:"People must eat. Demand near-fixed short-term, but food insecurity rises and quality/brand shifts down occur with sustained high prices."},
+    demandScores:{65:100,70:99,75:97,80:95,85:92,90:89,95:85,100:80,105:75,110:70,115:65,120:60},
+  },
+  {
+    id:"industrial", name:"Industrial / Manufacturing", icon:"🏭",
+    oilSharePct:8, oilType:"Diesel + Fuel Oil + Petrochemical feedstock",
+    customerSegments:[
+      {name:"Construction & Infrastructure",pct:35,
+        liquidity:"Moderate",currentRatio:1.4,debtToEquity:"Moderate (1.5–2x)",marginPct:"5–10%",
+        elasticity:0.25,elasticityLabel:"Moderately Inelastic",
+        note:"Active job sites continue despite fuel cost rises (sunk cost + contract commitments). New project starts delayed. Infrastructure bill spending is price-insensitive.",
+        tickers:["CAT","VMC","MLM","PWR"]},
+      {name:"Auto Manufacturing",pct:25,
+        liquidity:"Moderate",currentRatio:1.2,debtToEquity:"High (2–4x)",marginPct:"3–8%",
+        elasticity:0.45,elasticityLabel:"Moderately Elastic",
+        note:"Auto plants consume diesel/fuel oil for logistics and heat. Higher oil = lower new car demand (consumers defer), worsening plant utilization.",
+        tickers:["F","GM","TM","STLA"]},
+      {name:"Capital Goods / B2B",pct:25,
+        liquidity:"Strong",currentRatio:1.6,debtToEquity:"Low-Moderate (0.5–1.5x)",marginPct:"10–18%",
+        elasticity:0.3,elasticityLabel:"Moderately Inelastic",
+        note:"Industrial buyers defer new equipment orders at oil shock thresholds. Maintenance capex continues; growth capex stalls. Lead times mean effects lag 6–12 months.",
+        tickers:["HON","GE","ROK","ITW"]},
+      {name:"Defense / Aerospace",pct:15,
+        liquidity:"Very Strong",currentRatio:1.8,debtToEquity:"Moderate (1–2x)",marginPct:"8–12%",
+        elasticity:0.05,elasticityLabel:"Highly Inelastic",
+        note:"Defense spending is government-mandated. Oil price is irrelevant to procurement decisions. Geopolitical shock actually accelerates defense budgets.",
+        tickers:["LMT","NOC","RTX","GD"]},
+    ],
+    companies:[
+      {name:"Caterpillar",ticker:"CAT",type:"public",mcap:"$175B",role:"Construction & mining equipment — direct diesel demand proxy",
+       currentRatio:1.4,debtToEquity:"High (3x — captive finance)",margin:"16%",liquidity:"Moderate"},
+      {name:"3M",ticker:"MMM",type:"public",mcap:"$60B",role:"Industrial conglomerate, heavy petrochemical input user",
+       currentRatio:1.5,debtToEquity:"Moderate (1.5x)",margin:"12%",liquidity:"Moderate"},
+      {name:"Honeywell",ticker:"HON",type:"public",mcap:"$135B",role:"Industrials + energy transition tech",
+       currentRatio:1.4,debtToEquity:"Moderate (1.2x)",margin:"16%",liquidity:"Strong"},
+      {name:"Parker Hannifin",ticker:"PH",type:"public",mcap:"$70B",role:"Motion & control systems, fluid handling",
+       currentRatio:1.5,debtToEquity:"Moderate (1.5x)",margin:"12%",liquidity:"Moderate"},
+      {name:"Nucor",ticker:"NUE",type:"public",mcap:"$30B",role:"Largest US steelmaker — energy-intensive operations",
+       currentRatio:2.5,debtToEquity:"Low (0.5x)",margin:"10%",liquidity:"Strong"},
+      {name:"Koch Industries",ticker:"—",type:"private",mcap:"~$100B est.",role:"Diversified industrial including petroleum refining",
+       currentRatio:null,debtToEquity:"Private",margin:"Private",liquidity:"Strong"},
+      {name:"General Electric",ticker:"GE",type:"public",mcap:"$180B",role:"Aerospace & power generation — jet engine & turbine leader",
+       currentRatio:1.2,debtToEquity:"Moderate (2x)",margin:"8%",liquidity:"Moderate"},
+      {name:"Eaton Corporation",ticker:"ETN",type:"public",mcap:"$85B",role:"Power management & electrical systems, broad industrial exposure",
+       currentRatio:1.4,debtToEquity:"Moderate (1.0x)",margin:"14%",liquidity:"Strong"},
+      {name:"Emerson Electric",ticker:"EMR",type:"public",mcap:"$55B",role:"Automation & process control — oil & gas primary end market",
+       currentRatio:1.3,debtToEquity:"Moderate (1.1x)",margin:"13%",liquidity:"Strong"},
+      {name:"Rockwell Automation",ticker:"ROK",type:"public",mcap:"$28B",role:"Industrial automation — factory floor oil/energy intensity",
+       currentRatio:1.1,debtToEquity:"High (3x)",margin:"10%",liquidity:"Moderate"},
+    ],
+    balanceSheet:{sectorLiquidity:"Moderate-Strong",avgCurrentRatio:1.52,debtToEquity:"Moderate (1–2x, higher with captive finance)",marginPct:"8–16%",consumerLiquidity:"B2B — capital spending discretionary; defense/infra more resilient"},
+    elasticity:{score:0.3,label:"Moderately Inelastic",desc:"Projects already underway continue despite cost rises. New capex starts get delayed. Capital cycles slow but don't stop immediately."},
+    demandScores:{65:100,70:97,75:92,80:85,85:76,90:67,95:58,100:50,105:43,110:37,115:31,120:26},
+  },
+  {
+    id:"marine", name:"Marine / Shipping", icon:"🚢",
+    oilSharePct:5, oilType:"Bunker Fuel / VLSFO",
+    customerSegments:[
+      {name:"Global Retailers",pct:38,
+        liquidity:"Strong",currentRatio:1.4,debtToEquity:"Moderate (1–2x)",marginPct:"3–8%",
+        elasticity:0.2,elasticityLabel:"Inelastic",
+        note:"Walmart, IKEA, H&M cannot reroute supply chains in months. Shipping cost is <5% of product cost for most goods, so demand is very sticky short-term.",
+        tickers:["WMT","COST","IKEA (private)","H&M"]},
+      {name:"Auto Importers / OEMs",pct:22,
+        liquidity:"Moderate",currentRatio:1.2,debtToEquity:"High (2–4x)",marginPct:"4–8%",
+        elasticity:0.3,elasticityLabel:"Moderately Inelastic",
+        note:"Toyota, BMW, Mercedes ship cars globally. Hormuz disruption hits component supply chains. Port congestion and rerouting add 3–6 weeks and $1–3k/unit cost.",
+        tickers:["TM","BMWYY","MBGYY","HMC"]},
+      {name:"Commodity Traders",pct:25,
+        liquidity:"Very Strong",currentRatio:1.6,debtToEquity:"Moderate (1–2x)",marginPct:"1–3% (volume-based)",
+        elasticity:0.15,elasticityLabel:"Very Inelastic",
+        note:"Trafigura, Vitol, Glencore move oil, metals, grains globally. They benefit from disruption (wider spreads) and have the biggest balance sheets in the world.",
+        tickers:["GLEN.L","ADM","BG"]},
+      {name:"Consumer Electronics Supply",pct:15,
+        liquidity:"Very Strong",currentRatio:2.0,debtToEquity:"Low (0.3–0.8x)",marginPct:"20–35%",
+        elasticity:0.25,elasticityLabel:"Moderately Inelastic",
+        note:"Apple, Samsung ship components and finished goods. Air freight is the fallback, but 10x the cost. Companies build buffer inventory after COVID disruptions.",
+        tickers:["AAPL","SSNLF","TSM","AMAT"]},
+    ],
+    companies:[
+      {name:"A.P. Møller-Mærsk",ticker:"MAERSK-B.CO",type:"public",mcap:"DKK 190B",role:"World's 2nd largest container shipper, bunker fuel bellwether",
+       currentRatio:1.5,debtToEquity:"Low (0.4x)",margin:"15%",liquidity:"Strong"},
+      {name:"Hapag-Lloyd",ticker:"HLAG.DE",type:"public",mcap:"€18B",role:"Major container carrier, Hormuz exposure",
+       currentRatio:1.3,debtToEquity:"Low (0.5x)",margin:"12%",liquidity:"Moderate"},
+      {name:"Trafigura",ticker:"—",type:"private",mcap:"Private",role:"Major commodity trader — controls significant tanker fleet",
+       currentRatio:null,debtToEquity:"Moderate",margin:"~2%",liquidity:"Very Strong"},
+      {name:"Frontline",ticker:"FRO",type:"public",mcap:"$4B",role:"Crude tanker operator — direct Hormuz disruption beneficiary",
+       currentRatio:1.4,debtToEquity:"High (2.5x)",margin:"30%",liquidity:"Moderate"},
+      {name:"International Seaways",ticker:"INSW",type:"public",mcap:"$1.5B",role:"Tanker company, WTI/Brent spread plays",
+       currentRatio:1.6,debtToEquity:"Moderate (1.5x)",margin:"25%",liquidity:"Moderate"},
+      {name:"Scorpio Tankers",ticker:"STNG",type:"public",mcap:"$2B",role:"Product tanker operator — refined product shipping",
+       currentRatio:1.3,debtToEquity:"High (2x)",margin:"20%",liquidity:"Moderate"},
+      {name:"Nordic American Tankers",ticker:"NAT",type:"public",mcap:"$0.5B",role:"Suezmax crude tanker — high leverage to spot rates",
+       currentRatio:1.1,debtToEquity:"High (2.8x)",margin:"18%",liquidity:"Thin"},
+      {name:"DHT Holdings",ticker:"DHT",type:"public",mcap:"$1.5B",role:"VLCC crude tankers — long-haul Hormuz bypass beneficiary",
+       currentRatio:1.4,debtToEquity:"Moderate (1.4x)",margin:"22%",liquidity:"Moderate"},
+      {name:"Euronav NV",ticker:"EURN",type:"public",mcap:"$2B",role:"VLCC & Suezmax fleet — major independent crude carrier",
+       currentRatio:1.3,debtToEquity:"Moderate (1.6x)",margin:"20%",liquidity:"Moderate"},
+      {name:"Teekay Corporation",ticker:"TK",type:"public",mcap:"$0.8B",role:"Diversified tanker & offshore — legacy MLP structure",
+       currentRatio:1.2,debtToEquity:"High (3x)",margin:"12%",liquidity:"Thin"},
+    ],
+    balanceSheet:{sectorLiquidity:"Moderate",avgCurrentRatio:1.35,debtToEquity:"Moderate-High (1.5–3x)",marginPct:"12–30% (cyclical — high at $80+)",consumerLiquidity:"Cost passed to importers → embedded in retail prices"},
+    elasticity:{score:0.25,label:"Moderately Inelastic",desc:"Global trade cannot reroute easily short-term. Slow steaming reduces fuel use ~10–15%. Cape of Good Hope rerouting adds 2–3 weeks and significant cost."},
+    demandScores:{65:100,70:97,75:93,80:87,85:80,90:72,95:63,100:55,105:47,110:40,115:34,120:28},
+  },
+  {
+    id:"power", name:"Power Gen / Heating", icon:"🔥",
+    oilSharePct:4, oilType:"Fuel Oil / Distillates",
+    customerSegments:[
+      {name:"Residential Heating (NE US)",pct:40,
+        liquidity:"Low-Moderate",currentRatio:null,debtToEquity:"High household debt",marginPct:null,
+        elasticity:0.1,elasticityLabel:"Highly Inelastic",
+        note:"~5M US homes use heating oil, concentrated in New England. Cannot switch heating systems in-season. Low-income households most exposed. LIHEAP provides partial buffer.",
+        tickers:["ES","ETR"]},
+      {name:"Industrial Backup Power",pct:25,
+        liquidity:"Moderate-Strong",currentRatio:1.5,debtToEquity:"Moderate (1–2x)",marginPct:"8–15%",
+        elasticity:0.15,elasticityLabel:"Very Inelastic",
+        note:"Factories, hospitals, data centers all run diesel generators for backup. Non-negotiable safety and operations requirement. Cost is tiny relative to downtime risk.",
+        tickers:["CMI","GNRC","CAT"]},
+      {name:"Oil-Dependent Utilities",pct:20,
+        liquidity:"Stable",currentRatio:1.4,debtToEquity:"Moderate (1–1.5x)",marginPct:"10–18%",
+        elasticity:0.2,elasticityLabel:"Inelastic",
+        note:"Hawaii, Puerto Rico, and some island states run oil-fired power plants. Regulated utilities pass costs to ratepayers through rate cases. Transition to renewables is slow.",
+        tickers:["HE","NEE","AES"]},
+      {name:"Data Centers",pct:15,
+        liquidity:"Very Strong",currentRatio:2.0,debtToEquity:"Low (0.3–0.8x)",marginPct:"20–40%",
+        elasticity:0.05,elasticityLabel:"Highly Inelastic",
+        note:"Microsoft, Google, Amazon run diesel backup generators at every data center. A rounding error in their fuel budget. Cannot be compromised for uptime SLAs.",
+        tickers:["MSFT","GOOGL","AMZN"]},
+    ],
+    companies:[
+      {name:"NextEra Energy",ticker:"NEE",type:"public",mcap:"$135B",role:"Largest US utility — clean energy leader, some oil exposure",
+       currentRatio:0.9,debtToEquity:"High (1.8x)",margin:"16%",liquidity:"Stable"},
+      {name:"Dominion Energy",ticker:"D",type:"public",mcap:"$43B",role:"Major utility with regulated rate base",
+       currentRatio:0.8,debtToEquity:"High (2x)",margin:"14%",liquidity:"Stable"},
+      {name:"Eversource Energy",ticker:"ES",type:"public",mcap:"$20B",role:"New England utility — prime heating oil region",
+       currentRatio:0.9,debtToEquity:"High (1.8x)",margin:"10%",liquidity:"Stable"},
+      {name:"Cummins",ticker:"CMI",type:"public",mcap:"$36B",role:"Diesel & alternative power systems, generator sets",
+       currentRatio:1.6,debtToEquity:"Moderate (1x)",margin:"10%",liquidity:"Moderate"},
+      {name:"Generac",ticker:"GNRC",type:"public",mcap:"$10B",role:"Backup generator manufacturer — demand surges in crises",
+       currentRatio:2.0,debtToEquity:"Moderate (1.5x)",margin:"8%",liquidity:"Moderate"},
+      {name:"World Fuel Services",ticker:"INT",type:"public",mcap:"$2B",role:"Marine, aviation & land fuel distribution",
+       currentRatio:1.3,debtToEquity:"Moderate (1x)",margin:"0.5%",liquidity:"Thin"},
+      {name:"Duke Energy",ticker:"DUK",type:"public",mcap:"$80B",role:"Southeast utility — peaking plants and backup oil capacity",
+       currentRatio:0.8,debtToEquity:"High (2.2x)",margin:"15%",liquidity:"Stable"},
+      {name:"Hawaiian Electric",ticker:"HE",type:"public",mcap:"$1.5B",role:"Highest oil-fired generation exposure of any US utility",
+       currentRatio:0.7,debtToEquity:"High (3x)",margin:"8%",liquidity:"Stressed"},
+      {name:"Constellation Energy",ticker:"CEG",type:"public",mcap:"$60B",role:"Nuclear & gas fleet — oil backup peakers for reliability",
+       currentRatio:1.1,debtToEquity:"Moderate (1.5x)",margin:"12%",liquidity:"Moderate"},
+      {name:"Global Power Equipment",ticker:"GEN",type:"public",mcap:"$1B",role:"Distributed power generation & fuel-flexible turbines",
+       currentRatio:1.4,debtToEquity:"Moderate (1.8x)",margin:"7%",liquidity:"Moderate"},
+    ],
+    balanceSheet:{sectorLiquidity:"Stable",avgCurrentRatio:1.15,debtToEquity:"High (1.5–3x regulated utilities)",marginPct:"7–16% regulated",consumerLiquidity:"Heating is non-discretionary in cold climates; household energy burden rises sharply"},
+    elasticity:{score:0.15,label:"Very Inelastic",desc:"Short-term demand nearly fixed. Cannot switch heating systems overnight. Long-run structural shift to heat pumps and natural gas underway."},
+    demandScores:{65:100,70:99,75:97,80:94,85:90,90:85,95:79,100:73,105:67,110:61,115:55,120:49},
+  },
+  {
+    id:"other", name:"Other / Gov / Infrastructure", icon:"🏗️",
+    oilSharePct:7, oilType:"Diesel + Asphalt + Military Jet/Bunker",
+    customerSegments:[
+      {name:"Military & Federal Government",pct:40,
+        liquidity:"Infinite (sovereign)",currentRatio:null,debtToEquity:"Sovereign debt",marginPct:null,
+        elasticity:0.0,elasticityLabel:"Perfectly Inelastic",
+        note:"US military is the world's largest single oil consumer. Price is irrelevant — fuel is a national security input. Geopolitical shock actually increases military activity and fuel burn.",
+        tickers:["LMT","NOC","RTX","GD"]},
+      {name:"Road Construction / Asphalt",pct:28,
+        liquidity:"Moderate",currentRatio:1.3,debtToEquity:"Low (0.5–1x)",marginPct:"5–10%",
+        elasticity:0.1,elasticityLabel:"Highly Inelastic",
+        note:"IIJA (Infrastructure Investment and Jobs Act) locked in $550B of spending. Asphalt is oil-derived. Demand is legislatively committed — not discretionary.",
+        tickers:["VMC","MLM","CRH"]},
+      {name:"Pipeline Operators",pct:20,
+        liquidity:"Stable",currentRatio:1.1,debtToEquity:"High (2–3x)",marginPct:"20–35%",
+        elasticity:0.05,elasticityLabel:"Highly Inelastic",
+        note:"Kinder Morgan, Williams consume their own product to move product. Fuel-in-kind is a cost of operations. Higher oil = higher throughput value and revenues.",
+        tickers:["KMI","WMB","EPD","ET"]},
+      {name:"Lubricants & Solvents",pct:12,
+        liquidity:"Moderate-Strong",currentRatio:1.5,debtToEquity:"Moderate (1–2x)",marginPct:"10–20%",
+        elasticity:0.15,elasticityLabel:"Very Inelastic",
+        note:"Every engine, machine, and industrial process requires lubricants. Demand is maintenance-driven and non-negotiable. ExxonMobil's lubricants division is consistently profitable.",
+        tickers:["XOM","CVX","SHW"]},
+    ],
+    companies:[
+      {name:"Vulcan Materials",ticker:"VMC",type:"public",mcap:"$25B",role:"Aggregates & asphalt — infrastructure spending proxy",
+       currentRatio:1.5,debtToEquity:"Low (0.8x)",margin:"14%",liquidity:"Moderate"},
+      {name:"Martin Marietta",ticker:"MLM",type:"public",mcap:"$30B",role:"Aggregates, asphalt paving — highway bill beneficiary",
+       currentRatio:1.4,debtToEquity:"Moderate (1x)",margin:"14%",liquidity:"Moderate"},
+      {name:"Fluor Corporation",ticker:"FLR",type:"public",mcap:"$5B",role:"Engineering & construction — government project exposure",
+       currentRatio:1.8,debtToEquity:"Low (0.3x)",margin:"2%",liquidity:"Moderate"},
+      {name:"Lockheed Martin",ticker:"LMT",type:"public",mcap:"$105B",role:"Defense — military jet fuel is non-market, near-zero elasticity",
+       currentRatio:1.2,debtToEquity:"Very High (negative equity)",margin:"10%",liquidity:"Stable"},
+      {name:"Kinder Morgan",ticker:"KMI",type:"public",mcap:"$24B",role:"Pipeline operator — consumes own fuel to move product",
+       currentRatio:0.8,debtToEquity:"High (2.5x)",margin:"18%",liquidity:"Stable"},
+      {name:"ExxonMobil (Lubricants)",ticker:"XOM",type:"public",mcap:"$490B",role:"Largest lubricant producer globally",
+       currentRatio:1.4,debtToEquity:"Low (0.3x)",margin:"8%",liquidity:"Very Strong"},
+      {name:"Northrop Grumman",ticker:"NOC",type:"public",mcap:"$65B",role:"Defense systems — B-21, nuclear deterrent, near-zero price elasticity",
+       currentRatio:1.0,debtToEquity:"High (3.5x)",margin:"11%",liquidity:"Stable"},
+      {name:"Raytheon Technologies",ticker:"RTX",type:"public",mcap:"$135B",role:"Missiles, sensors & commercial aero — dual government/commercial",
+       currentRatio:1.1,debtToEquity:"Moderate (2x)",margin:"8%",liquidity:"Stable"},
+      {name:"Leidos Holdings",ticker:"LDOS",type:"public",mcap:"$20B",role:"Defense IT & engineering — government services, budget-insulated",
+       currentRatio:1.1,debtToEquity:"Moderate (2.2x)",margin:"6%",liquidity:"Moderate"},
+      {name:"Booz Allen Hamilton",ticker:"BAH",type:"public",mcap:"$16B",role:"Defense consulting & intel — 97% government revenue",
+       currentRatio:1.3,debtToEquity:"High (4x)",margin:"7%",liquidity:"Moderate"},
+    ],
+    balanceSheet:{sectorLiquidity:"Stable-Moderate",avgCurrentRatio:1.27,debtToEquity:"Varied (0.3x infra to negative equity defense)",marginPct:"6–18% (pipelines & defense strongest)",consumerLiquidity:"Government-funded — non-discretionary; asphalt demand tied to infrastructure bills"},
+    elasticity:{score:0.05,label:"Highly Inelastic",desc:"Military fuel is non-market. Asphalt demand tied to legislated infrastructure spending. Pipeline fuel is a cost of operating. Near-zero price sensitivity."},
+    demandScores:{65:100,70:100,75:99,80:98,85:97,90:95,95:93,100:90,105:87,110:83,115:79,120:75},
+  },
+];
+
+const MACRO_SCENARIOS = {
+  65:{
+    regime:"Contango / Oversupply",regimeColor:"#22d3a0",
+    summary:"Oil markets are oversupplied or demand is weak. Economy running at near-potential with low energy inflation drag.",
+    gdp:"2.5–3% GDP growth, inflation near 2% target, Fed on hold or cutting",
+    positives:["Low energy costs boost consumer discretionary spending","Manufacturing margins expand as input costs fall","Airlines and cruise lines see strong demand recovery","Emerging markets benefit from lower import bills","Fed has room to cut — risk assets supported"],
+    negatives:["US shale producers reduce capex, future supply risk","Energy sector earnings decline — XOM, CVX, COP underperform","Petrostates (Saudi, UAE, Russia) face budget pressure","ESG-driven underinvestment in new production worsens future supply"],
+    regime_plays:["Long: Airlines (DAL, UAL), Cruise (CCL, RCL)","Long: Consumer discretionary (AMZN, MCD, SBUX)","Short: Energy producers (XOM, CVX, COP)","Watch: Fed pivot catalyst for small cap rally"],
+  },
+  70:{
+    regime:"Balanced / Base Case",regimeColor:"#34d399",
+    summary:"Oil at equilibrium. Healthy economic expansion continues with manageable energy inflation.",
+    gdp:"2–2.5% GDP growth, CPI 2.5–3%, Fed stable",
+    positives:["Energy sector generating healthy FCF without strangling economy","Corporate margins stable, earnings growth intact","Consumer spending resilient — gasoline manageable","Infrastructure and construction spending robust"],
+    negatives:["Geopolitical premium keeps markets cautious","OPEC+ holds production discipline","Slight headwind to airline profitability"],
+    regime_plays:["Long: Balanced equity portfolio","Long: Energy midstream (KMI, WMB) for stable yield","Neutral: Airlines — hedge fuel exposure","Watch: Dollar strength vs petrocurrencies"],
+  },
+  75:{
+    regime:"Mild Tightening",regimeColor:"#a3e635",
+    summary:"Oil prices slightly elevated. Beginning to see marginal demand softening in discretionary sectors. Economy still growing.",
+    gdp:"1.8–2.5% GDP growth, CPI 3–3.5%, Fed holds",
+    positives:["Energy capex increases — E&P stocks outperform","Refinery margins expand","US shale accelerates production (nat'l security incentive)","Defense stocks benefit from geopolitical premium"],
+    negatives:["Airline ticket prices rise 8–12%, load factors soften","Consumer savings starting to erode","Small businesses with thin margins begin to squeeze","Emerging market currencies weakening vs USD"],
+    regime_plays:["Long: E&P stocks (XOM, COP, DVN)","Long: Oil services (SLB, HAL, BKR)","Hedge: Put spreads on airlines","Watch: 10yr Treasury yield response"],
+  },
+  80:{
+    regime:"Geopolitical Premium",regimeColor:"#f0b429",
+    summary:"Current zone (Iran-Hormuz crisis). Real supply disruption priced in. Economy absorbing but showing stress. Stagflationary pressure building.",
+    gdp:"1.5–2% GDP growth, CPI 3.5–4.5%, Fed uncertain",
+    positives:["Energy producers generating record FCF","Tanker stocks surge (FRO, INSW, STNG)","Defense spending accelerates globally","US LNG exports grab market share from Qatar"],
+    negatives:["Gas prices trending toward $3.50–$4.00","Consumer confidence declining","Corporate margin compression beginning","Airlines cutting capacity, raising fares","Fed caught between inflation and growth"],
+    regime_plays:["Long: Tankers (FRO, INSW), Defense (LMT, NOC, RTX)","Long: US E&P (XOM, CVX — domestic insulation)","Short: Airlines (DAL, UAL), Cruise (CCL)","Hedge: Gold (GLD), Short duration bonds"],
+  },
+  85:{
+    regime:"Demand Softening",regimeColor:"#fb923c",
+    summary:"Meaningful demand destruction beginning. Discretionary sectors contracting. Recession probability rising. Fed faces stagflation dilemma.",
+    gdp:"1–1.5% GDP growth, CPI 4–5%, recession risk 25–35%",
+    positives:["Shale producers massively profitable — reinvesting in supply","Safe haven assets rally (gold, CHF, JPY)","Energy infrastructure yields attractive on relative basis","Geopolitical demand for US military materiel rises"],
+    negatives:["Leisure travel collapses 20–30% from base","Consumer credit card delinquencies rising","Housing affordability hitting new lows","Manufacturing PMIs turning contractionary","EM debt crises risk (oil-importing EMs)"],
+    regime_plays:["Long: Gold (GLD), Short-term TIPS","Long: Defense (LMT, NOC), Energy services","Short: Consumer discretionary (AMZN, HD, TGT)","Short: Airlines, Auto (F, GM)","Hedge: VIX calls, USD longs vs EM FX"],
+  },
+  90:{
+    regime:"Stagflationary Stress",regimeColor:"#f97316",
+    summary:"Classic stagflation scenario. High inflation + slowing growth + tightening financial conditions. Most asset classes underperforming.",
+    gdp:"0–1% GDP growth, CPI 5–7%, recession probability 50–65%",
+    positives:["Oil majors and royalty trusts generating exceptional returns","Agricultural commodities surge — ADM, BG outperform","Infrastructure assets (pipelines, utilities) offer inflation hedge","Strategic petroleum reserve draws provide tactical relief"],
+    negatives:["GDP growth near stall speed","Corporate earnings broadly missing","Consumer spending collapsing on discretionary items","Credit spreads widening significantly","Fed forced into painful rate decision","Global trade volumes declining 5–10%"],
+    regime_plays:["Long: Hard assets — oil (USO, XLE), gold, commodities","Long: Short duration TIPS, I-bonds","Short: Growth stocks, long-duration bonds","Short: Retail, airlines, autos broadly","Rotate: Value over growth, energy over tech"],
+  },
+  95:{
+    regime:"Crisis / Demand Destruction",regimeColor:"#ef4444",
+    summary:"Severe demand destruction across most sectors. Recession effectively underway. Policy makers scrambling. SPR deployment likely.",
+    gdp:"-0.5–0.5% GDP growth (recession), CPI 6–8%, Fed in dilemma",
+    positives:["Energy sector among only positive performers","Short sellers profitable across broad market","Cash and T-bills outperforming","IEA coordinated SPR release likely — temporary relief rally opportunity"],
+    negatives:["Broad corporate earnings collapse","Unemployment rising 0.5–1% above trend","Credit crisis risk in leveraged sectors (aviation, retail, autos)","Housing market correction accelerating","Global recession contagion risk"],
+    regime_plays:["Long: Energy majors for FCF yield","Long: Cash, short-term Treasuries","Short: Broad equity market (SPY puts)","Short: High-yield credit (HYG, JNK)","Watch: IEA/SPR release for short-squeeze catalyst"],
+  },
+  100:{
+    regime:"$100 Breakout — Macro Shock",regimeColor:"#dc2626",
+    summary:"Psychological $100 level triggers broad risk-off. Recession consensus. Comparable to 2008 oil spike. Policy response becomes the dominant market driver.",
+    gdp:"-1–0% GDP (recession), CPI 7–9%, aggressive Fed response likely",
+    positives:["Energy sector and commodity producers peak profitability","Defense/aerospace at multi-decade highs","Inflation beneficiaries: TIPS, real assets, farmland","US benefits as net oil exporter — relative outperformance vs Europe/Asia"],
+    negatives:["Global recession effectively underway","Airline bankruptcies possible (historically 3–4 carriers fail at $100+)","Auto sales plunge 20–30%","Emerging market debt crisis risk elevated","Consumer confidence at multi-year lows"],
+    regime_plays:["Long: XLE, XOM, CVX — peak FCF","Long: Defense: LMT, NOC, RTX, LDOS","Long: Agriculture: ADM, DE, NTR","Short: Discretionary: CCL, DAL, GM, AMZN","Systemic hedge: Long volatility (VIX), put spreads on SPY"],
+  },
+  105:{
+    regime:"Deep Crisis",regimeColor:"#b91c1c",
+    summary:"Territory only seen briefly in 2008 and 2011. Demand destruction severe and broad. Policy coordination (G7, IEA, OPEC) becomes critical.",
+    gdp:"-1.5–-0.5% GDP, CPI 8–10%, coordinated policy response expected",
+    positives:["Energy sector operating at extraordinary margins","Geopolitical repositioning benefiting US LNG, US shale","Agricultural commodities at multi-decade highs","Defense spending cycle enters generational expansion"],
+    negatives:["Consumer spending collapsing broadly","Corporate bankruptcy wave in highly leveraged sectors","Global supply chains further fragmenting","European recession severe — energy import dependency","China demand destruction — EM contagion risk"],
+    regime_plays:["Long: US energy majors — domestic insulation premium","Long: Defense mega-caps (LMT, NOC)","Long: Cash equivalent — preserve capital","Short: European equities (EWG, EWI) — energy import exposure","Short: Highly levered consumer names"],
+  },
+  110:{
+    regime:"Systemic Shock",regimeColor:"#991b1b",
+    summary:"Approaching 2008 peak territory ($145/bbl). Systemic risk elevated. Coordinated international policy response almost certain. Demand destruction accelerating.",
+    gdp:"-2–-1% GDP, CPI 9–11%, global recession broad",
+    positives:["US crude exports at record — national trade balance improvement","Energy infrastructure — pipelines, storage at maximum utilization","Alternative energy stocks surge on long-term substitution bet","Gold, Swiss franc, Japanese yen at multi-year highs"],
+    negatives:["Airlines likely entering bankruptcy (multiple carriers)","Auto industry requesting government bailout discussions","Broad consumer credit stress — default rates rising","Housing market correction 15–25% in highly levered markets","Global food crisis risk elevated"],
+    regime_plays:["Preserve capital — cash, T-bills, gold","Long: XOM, CVX for FCF yield only","Long: Defense — war-driven demand is price inelastic","Short: Everything else — SPY, IWM, XLY, XLC","Watch: Policy intervention as major reversal catalyst"],
+  },
+  115:{
+    regime:"Near-Historical Peak",regimeColor:"$7f1d1d",
+    summary:"Approaching all-time nominal highs. Global economic damage severe. International coordination (SPR, OPEC+ unwind, emergency measures) likely underway.",
+    gdp:"-2.5–-1.5% GDP, CPI 10–12%, severe global recession",
+    positives:["Energy companies generating unprecedented cash","Rapid acceleration of energy transition investment","US geopolitical leverage at maximum","Some EM oil exporters (Saudi, UAE) seeing sovereign wealth windfalls"],
+    negatives:["Humanitarian crisis in oil-importing developing nations","Global trade collapse 15–25%","Financial system stress — credit crises in multiple countries","Political instability risk in energy-importing nations","Historical precedent: sustained above $100 preceded every major recession since 1970"],
+    regime_plays:["Capital preservation paramount","Long: Commodities, hard assets, energy royalties","Long: Defense + security sector","Short: Growth, credit, consumer broadly","Emergency hedge: Long VIX, tail risk puts"],
+  },
+  120:{
+    regime:"Catastrophic / Uncharted",regimeColor:"#450a0a",
+    summary:"Beyond any sustained historical precedent. Demand destruction so severe it would be self-correcting over 6–18 months. Global recession severe. Geopolitical realignment underway.",
+    gdp:"-3–-2% GDP, CPI 12%+, severe global depression risk",
+    positives:["Energy transition permanently accelerated — decade of EV/solar capex pulled forward","US energy dominance cemented for a generation","Saudi/UAE sovereign wealth funds at record levels","Defense industry in 1940s-style expansion mode"],
+    negatives:["Global recession approaching depression severity","Multiple national debt crises","Food security crisis in 50+ countries","Political instability in oil-importing EMs","Structural de-globalization — supply chain fragmentation permanent","Airline industry faces existential restructuring"],
+    regime_plays:["Survival mode — T-bills, gold, inflation-linked bonds","Long: Energy (for income, not growth)","Long: Defense + hard infrastructure","Short: Global growth trade — EEM, SPY, IWM","Wait for policy intervention then buy the dip aggressively"],
+  },
+};
+
+const SOURCES = [
+  {category:"🛢️ Oil Market & Iran Conflict",refs:[
+    {title:"US-Iran Conflict: Strait of Hormuz Crisis Reshapes Global Oil Markets",org:"Kpler",date:"Mar 1, 2026",url:"https://www.kpler.com/blog/us-iran-conflict-strait-of-hormuz-crisis-reshapes-global-oil-markets",notes:"Supply disruption analysis, WTI-Brent spread dynamics, jet fuel crack outlook"},
+    {title:"How a Conflict in Iran Could Affect Oil Markets in the Gulf Arab States",org:"Columbia SIPA / Center on Global Energy Policy",date:"Mar 2, 2026",url:"https://www.energypolicy.columbia.edu/how-a-conflict-in-iran-could-affect-oil-markets-in-the-gulf-arab-states/",notes:"GCC spare capacity, Saudi/UAE/Kuwait production data, OPEC+ dynamics"},
+    {title:"2026 Strait of Hormuz Crisis",org:"Wikipedia",date:"Mar 4, 2026",url:"https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis",notes:"Tanker traffic data (~70% drop), shipping firm suspensions, 20 mb/d strait volume"},
+    {title:"Economic Impact of the 2026 Iran War",org:"Wikipedia",date:"Mar 5, 2026",url:"https://en.wikipedia.org/wiki/Economic_impact_of_the_2026_Iran_war",notes:"Stock market reaction, Brent price surge (+10–13%), aviation disruptions"},
+    {title:"If Trump Strikes Iran: Mapping the Oil Disruption Scenarios",org:"CSIS",date:"Feb 2026",url:"https://www.csis.org/analysis/if-trump-strikes-iran-mapping-oil-disruption-scenarios",notes:"Pipeline bypass capacity, Saudi East-West pipeline spare capacity analysis"},
+    {title:"Oil Surges and Stock Futures Sink as War in Iran Threatens Crude Supply",org:"CNN Business",date:"Mar 1, 2026",url:"https://www.cnn.com/2026/03/01/business/oil-prices-us-attack-iran-vis",notes:"WTI +7.5%, Brent +6.2%, Goldman Sachs $100/bbl scenario"},
+    {title:"Will the US Benefit from the Oil Crisis Sparked by the War on Iran?",org:"Al Jazeera",date:"Mar 5, 2026",url:"https://www.aljazeera.com/news/2026/3/5/will-the-us-benefit-from-the-oil-crisis-sparked-by-the-war-on-iran",notes:"US crude export position, LNG market share opportunity"},
+    {title:"Shutdown of Hormuz Strait Raises Fears of Soaring Oil Prices",org:"Al Jazeera",date:"Mar 3, 2026",url:"https://www.aljazeera.com/economy/2026/3/3/shutdown-of-hormuz-strait-raises-fears-of-soaring-oil-prices",notes:"80% traffic drop, IRGC closure declaration, QatarEnergy LNG halt"},
+    {title:"How the Iran War Is Disrupting Global Oil and Gas Supply",org:"Bloomberg",date:"Mar 5, 2026",url:"https://www.bloomberg.com/news/articles/2026-03-05/iran-war-how-oil-prices-are-surging-as-hormuz-shipping-production-disrupted",notes:"QatarEnergy LNG facility halt, ~25% of global seaborne oil trade through Hormuz"},
+  ]},
+  {category:"📊 Oil Consumption by Sector",refs:[
+    {title:"Distribution of Oil Demand in the OECD by Sector (2023)",org:"Statista / OPEC",date:"Jan 2025",url:"https://www.statista.com/statistics/307194/top-oil-consuming-sectors-worldwide/",notes:"Road transport = 49% of OECD oil demand; petrochemicals ~12%"},
+    {title:"Use of Oil — Petroleum Products Breakdown",org:"U.S. Energy Information Administration (EIA)",date:"Aug 2023",url:"https://www.eia.gov/energyexplained/oil-and-petroleum-products/use-of-oil.php",notes:"Gasoline 43% of US consumption, diesel #2 product, petrochemical feedstock uses"},
+    {title:"Can Oil Be Replaced? Global Oil Trends & Transport Dependency",org:"Enerdata",date:"2024",url:"https://www.enerdata.net/publications/executive-briefing/global-oil-market-trends.html",notes:"Transport = 61% of final oil consumption; oil powers 92% of transport sector"},
+    {title:"Industry and Transport Drive Economic Growth",org:"ExxonMobil Global Outlook",date:"2025",url:"https://corporate.exxonmobil.com/sustainability-and-reports/global-outlook/industry-and-transport-drive-economic-growth",notes:"Industrial + commercial transport = 65% of global energy use"},
+    {title:"Oil – Global Energy Review 2025",org:"IEA",date:"2025",url:"https://www.iea.org/reports/global-energy-review-2025/oil",notes:"Non-feedstock uses flat vs 2019 despite 14% GDP growth"},
+    {title:"Oil 2025 — Executive Summary",org:"IEA",date:"2025",url:"https://www.iea.org/reports/oil-2025/executive-summary",notes:"Petrochemicals becoming dominant demand growth driver from 2026; EVs displacing 5.4 mb/d by 2030"},
+  ]},
+  {category:"💰 Corporate Liquidity & Balance Sheets",refs:[
+    {title:"Ranked: The World's 50 Largest Corporate Cash Piles",org:"Visual Capitalist / TradingView",date:"Feb 11, 2026",url:"https://www.visualcapitalist.com/ranked-the-companies-holding-the-most-cash-in-the-world/",notes:"Berkshire $382B, Alphabet $127B, Amazon $126B; Magnificent Seven = $597B combined"},
+    {title:"2026 Market Outlook",org:"J.P. Morgan Global Research",date:"Dec 2025",url:"https://www.jpmorgan.com/insights/global-research/outlook/market-outlook",notes:"Corporate balance sheet health, ample liquidity tailwind, earnings growth 13–15%"},
+    {title:"The S&P 500 Is Expected to Rally 12% This Year",org:"Goldman Sachs",date:"Jan 6, 2026",url:"https://www.goldmansachs.com/insights/articles/the-sp-500-expected-to-rally-12-this-year",notes:"Leverage low vs history, EPS growth 12%, AI capex at 75% of cash flows"},
+    {title:"Liquidity: A Subtle Support for 2026",org:"Citi Wealth",date:"2026",url:"https://marketinsights.citi.com/Market-Commentary/Weekly-Market-Update/Liquidity-a-Subtle-Support-for-2026.html",notes:"Fed accommodative shift, loosening lending standards"},
+  ]},
+  {category:"📉 Demand Elasticity & Stagflation",refs:[
+    {title:"The Complex Relationship Between Oil Prices and Inflation",org:"Investing News Network",date:"Jun 2025",url:"https://investingnews.com/daily/resource-investing/energy-investing/oil-and-gas-investing/oil-price-and-inflation/",notes:"Oil-CPI relationship has eroded since 1990s"},
+    {title:"Oil Price Shocks, Monetary Policy and Stagflation",org:"Reserve Bank of Australia (Kilian)",date:"2009",url:"https://www.rba.gov.au/publications/confs/2009/kilian.html",notes:"Demand vs supply shock distinction; Fed response can cause recessions independently"},
+    {title:"A Stagflation Primer",org:"Meketa Investment Group",date:"May 2025",url:"https://meketa.com/wp-content/uploads/2025/05/MEKETA_Stagflation.pdf",notes:"Cost-push vs demand-pull inflation; asset class returns under stagflation"},
+    {title:"The Supply Shock Explanation of the Great Stagflation Revisited",org:"NBER (Blinder & Rudd, Princeton)",date:"2010",url:"https://gceps.princeton.edu/wp-content/uploads/2017/01/176blinder.pdf",notes:"80% pass-through of energy costs to consumer prices"},
+  ]},
+];
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function getColor(score){
+  if(score>=85)return"#22d3a0";
+  if(score>=70)return"#f0b429";
+  if(score>=55)return"#fb923c";
+  return"#ef4444";
+}
+function getLabelColor(label){
+  const m={"Very Inelastic":"#22d3a0","Highly Inelastic":"#10b981","Inelastic":"#34d399","Moderately Inelastic":"#f0b429","Moderately Elastic":"#fb923c"};
+  return m[label]||"#94a3b8";
+}
+function getLiqColor(liq){
+  if(["Thin","Stressed"].includes(liq))return"#fb923c";
+  if(["Stable","Moderate-Strong"].includes(liq))return"#22d3a0";
+  return"#f0b429";
+}
+function globalAvg(price){
+  return Math.round(INDUSTRIES.reduce((s,i)=>s+i.demandScores[price],0)/INDUSTRIES.length);
+}
+function scoreBarHtml(score,cls="md"){
+  return`<div class="score-bar ${cls}"><div class="score-bar-fill" style="width:${score}%;background:${getColor(score)}"></div></div>`;
+}
+function nearestPrice(val){
+  return PRICE_POINTS.reduce((prev,curr)=>Math.abs(curr-val)<Math.abs(prev-val)?curr:prev);
+}
+function getMacroKey(price){
+  return nearestPrice(price);
+}
+
+// ── LIVE WTI ─────────────────────────────────────────────────────────────────
+
+function updateSliderStyle(val){
+  val=parseInt(val);
+  const pct=(val-65)/(120-65)*100;
+  const color=val<=75?'#22d3a0':val<=85?'#f0b429':val<=95?'#fb923c':'#ef4444';
+  const pill=document.getElementById('slider-pill');
+  if(pill){ pill.textContent='$'+val; pill.style.color=color; }
+  const sliderEl=document.getElementById('wti-slider');
+  if(sliderEl) sliderEl.style.background=`linear-gradient(to right,${color} ${pct}%,rgba(255,255,255,0.12) ${pct}%)`;
+  const snapped=nearestPrice(val);
+  const macro=MACRO_SCENARIOS[getMacroKey(snapped)];
+  const regimeEl=document.getElementById('slider-regime');
+  if(regimeEl){ regimeEl.textContent=macro.regime; regimeEl.style.color=macro.regimeColor; regimeEl.style.borderColor=macro.regimeColor+'50'; regimeEl.style.background=macro.regimeColor+'12'; }
+  const avg=globalAvg(snapped);
+  const scoreEl=document.getElementById('slider-score');
+  if(scoreEl){ scoreEl.textContent='Demand score: '+avg+'/100'; scoreEl.style.color=color; }
+}
+
+function onSliderChange(val){
+  val=parseInt(val);
+  updateSliderStyle(val);
+  const snapped=nearestPrice(val);
+  selectPrice(snapped);
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────────
+function renderOverview(){
+  const container=document.getElementById('tab-overview');
+  let html='<div class="cards-grid">';
+  INDUSTRIES.forEach(ind=>{
+    html+=`<div class="industry-card" onclick="goToDetail('${ind.id}')">
+      <div class="card-header">
+        <div><div class="card-title">${ind.icon} ${ind.name}</div><div class="card-fuel">${ind.oilType}</div></div>
+        <div class="badge-teal">${ind.oilSharePct}% of US</div>
+      </div>
+      <div class="share-bar"><div class="share-bar-fill" style="width:${ind.oilSharePct*1.8}%"></div></div>
+      <div class="card-row">
+        <span class="label-sm">DEMAND ELASTICITY</span>
+        <span class="elasticity-badge" style="color:${getLabelColor(ind.elasticity.label)};border-color:${getLabelColor(ind.elasticity.label)}50">${ind.elasticity.label}</span>
+      </div>
+      <div class="card-liquidity">
+        <span class="label-sm">SECTOR LIQUIDITY: </span>
+        <span style="color:${getLiqColor(ind.balanceSheet.sectorLiquidity)}">${ind.balanceSheet.sectorLiquidity}</span>
+        <span style="color:#64748b"> · </span>
+        <span>D/E: ${ind.balanceSheet.debtToEquity}</span>
+      </div>
+      <div class="mini-bars">
+        ${PRICE_POINTS.map(p=>{const s=ind.demandScores[p];return`<div class="mini-bar-wrap"><div class="mini-bar-outer" style="background:${getColor(s)}20"><div class="mini-bar-inner" style="height:${s}%;background:${getColor(s)};opacity:0.7"></div></div><div class="mini-bar-label">$${p}</div></div>`;}).join('')}
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  html+=`<div class="legend">
+    <span class="label-sm" style="letter-spacing:1px">DEMAND SCORE:</span>
+    ${[["85–100","#22d3a0","Resilient"],["70–84","#f0b429","Softening"],["55–69","#fb923c","Contracting"],["<55","#ef4444","Collapsing"]].map(([r,c,l])=>`<div class="legend-item"><div class="legend-dot" style="background:${c}"></div><span class="legend-text">${r} — ${l}</span></div>`).join('')}
+    <span class="legend-text" style="margin-left:auto">Click card → Deep Dive</span>
+  </div>`;
+  html+=buildSrcDropdown('src-overview',['📊 Oil Consumption by Sector','🛢️ Oil Market & Iran Conflict']);
+  container.innerHTML=html;
+}
+
+// ── SCENARIO ─────────────────────────────────────────────────────────────────
+function renderPriceButtons(){
+  const tags={65:'BASE',80:'NOW',100:'STRESS',120:'EXTREME'};
+  const tagColors={65:'#475569',80:'#f0b429',100:'#ef4444',120:'#7f1d1d'};
+  document.getElementById('price-buttons').innerHTML=PRICE_POINTS.map(p=>`
+    <button class="price-btn${p===selectedPrice?' active':''}" onclick="selectPrice(${p})">
+      $${p}${tags[p]?`<span class="price-tag" style="color:${tagColors[p]}">${tags[p]}</span>`:''}
+    </button>`).join('');
+}
+function renderAggCard(){
+  const avg=globalAvg(selectedPrice);
+  const macro=MACRO_SCENARIOS[getMacroKey(selectedPrice)];
+  const desc=avg>=85?"Economy absorbing oil costs — minimal demand destruction":avg>=70?"Visible softening in discretionary sectors — stagflationary pressure building":avg>=55?"Significant demand contraction — recession risk elevated":avg>=40?"Demand collapse — severe recession underway":"Catastrophic — near-depression level demand destruction";
+  document.getElementById('agg-card').innerHTML=`
+    <div>
+      <div class="agg-label">AGGREGATE DEMAND SCORE @ $${selectedPrice}/BBL</div>
+      <div class="agg-score" style="color:${getColor(avg)}">${avg}<span style="font-size:14px;color:#64748b">/100</span></div>
+    </div>
+    <div style="flex:1;min-width:180px">
+      ${scoreBarHtml(avg,'md')}
+      <div style="font-size:11px;color:#64748b;margin-top:6px">${desc}</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:10px;color:#64748b;font-family:monospace">vs BASE ($65)</div>
+      <div style="font-size:22px;font-family:monospace;color:#ef4444">-${100-avg} pts</div>
+    </div>
+    <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:16px">
+      <div style="font-size:9px;letter-spacing:2px;color:#475569;font-family:monospace;margin-bottom:4px">MACRO REGIME</div>
+      <div style="font-size:13px;font-family:monospace;font-weight:600;color:${macro.regimeColor}">${macro.regime}</div>
+      <div style="font-size:11px;color:#64748b;margin-top:3px;font-family:monospace">${macro.gdp}</div>
+    </div>`;
+}
+function renderMacroPanel(){
+  const macro=MACRO_SCENARIOS[getMacroKey(selectedPrice)];
+  document.getElementById('macro-panel').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;color:#475569;font-family:monospace;margin-bottom:6px">MACRO ENVIRONMENT @ $${selectedPrice}/BBL</div>
+        <div style="font-size:13px;color:#cbd5e1;line-height:1.6;max-width:600px">${macro.summary}</div>
+      </div>
+    </div>
+    <div class="macro-grid" style="margin-top:16px">
+      <div>
+        <div class="macro-col-label" style="color:#22d3a0">✅ TAILWINDS / OPPORTUNITIES</div>
+        ${macro.positives.map(p=>`<div class="macro-item"><div class="macro-dot" style="background:#22d3a0"></div><span>${p}</span></div>`).join('')}
+      </div>
+      <div>
+        <div class="macro-col-label" style="color:#ef4444">⚠️ HEADWINDS / RISKS</div>
+        ${macro.negatives.map(p=>`<div class="macro-item"><div class="macro-dot" style="background:#ef4444"></div><span>${p}</span></div>`).join('')}
+      </div>
+    </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06)">
+      <div style="font-size:10px;letter-spacing:2px;color:#f0b429;font-family:monospace;margin-bottom:8px">💡 REGIME TRADE IDEAS</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${macro.regime_plays.map(play=>{
+          const isLong=play.startsWith('Long');
+          const isShort=play.startsWith('Short');
+          const isWatch=play.startsWith('Watch');
+          const color=isLong?'#22d3a0':isShort?'#ef4444':isWatch?'#94a3b8':'#f0b429';
+          return`<div style="padding:5px 10px;border-radius:4px;font-size:11px;font-family:monospace;background:${color}12;border:1px solid ${color}30;color:${color}">${play}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+function renderScenarioTable(){
+  const sorted=[...INDUSTRIES].sort((a,b)=>b.demandScores[selectedPrice]-a.demandScores[selectedPrice]);
+  let html=`<div class="ind-table-header"><div>INDUSTRY</div><div>OIL SHARE</div><div>ELASTICITY</div><div style="color:#22d3a0">SCORE @$${selectedPrice}</div><div>TRAJECTORY</div></div>`;
+  sorted.forEach(ind=>{
+    const score=ind.demandScores[selectedPrice];
+    const delta=score-100;
+    html+=`<div class="ind-table-row" onclick="goToDetail('${ind.id}')">
+      <div><div class="row-name">${ind.icon} ${ind.name}</div><div class="row-fuel">${ind.oilType}</div></div>
+      <div class="row-share">${ind.oilSharePct}%</div>
+      <div>
+        <div class="elasticity-badge" style="color:${getLabelColor(ind.elasticity.label)};border-color:${getLabelColor(ind.elasticity.label)}50;display:inline-block">${ind.elasticity.label}</div>
+        <div style="font-size:10px;color:#475569;font-family:monospace;margin-top:2px">ε=${ind.elasticity.score}</div>
+      </div>
+      <div>
+        <div class="row-score-big" style="color:${getColor(score)}">${score}</div>
+        <div class="row-delta" style="color:${delta<0?'#ef4444':'#22d3a0'}">${delta<0?delta:'+'+delta} pts</div>
+      </div>
+      <div>
+        <div class="sparkbar-wrap">
+          ${PRICE_POINTS.map(p=>{const s=ind.demandScores[p];return`<div class="sparkbar-col"><div class="sparkbar-fill" style="height:${s}%;background:${getColor(s)};opacity:${p===selectedPrice?1:0.35}"></div></div>`;}).join('')}
+        </div>
+        ${scoreBarHtml(score,'sm')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('scenario-table').innerHTML=html;
+}
+function renderMatrix(){
+  let html='<thead><tr><th style="text-align:left;padding-left:14px;color:#475569;font-weight:400;border-bottom:1px solid rgba(255,255,255,0.1)">Industry</th>';
+  PRICE_POINTS.forEach(p=>{html+=`<th class="${p===selectedPrice?'active-col':''}" style="border-bottom:1px solid rgba(255,255,255,0.1)">$${p}</th>`;});
+  html+='</tr></thead><tbody>';
+  INDUSTRIES.forEach(ind=>{
+    html+=`<tr><td>${ind.icon} ${ind.name}</td>`;
+    PRICE_POINTS.forEach(p=>{
+      const s=ind.demandScores[p];const ia=p===selectedPrice;
+      html+=`<td style="color:${getColor(s)};font-weight:${ia?700:400};background:${ia?getColor(s)+'18':'transparent'};${ia?`border-left:1px solid ${getColor(s)}30;border-right:1px solid ${getColor(s)}30`:''}">${s}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='<tr class="avg-row"><td>📊 Wtd Avg</td>';
+  PRICE_POINTS.forEach(p=>{const avg=globalAvg(p);const ia=p===selectedPrice;html+=`<td style="color:${getColor(avg)};font-weight:700;background:${ia?getColor(avg)+'25':'transparent'}">${avg}</td>`;});
+  html+='</tr></tbody>';
+  document.getElementById('matrix-table').innerHTML=html;
+}
+function selectPrice(p){
+  selectedPrice=p;
+  document.getElementById('wti-slider').value=p;
+  updateSliderStyle(p);
+  renderPriceButtons();renderAggCard();renderMacroPanel();renderScenarioTable();renderMatrix();
+}
+
+// ── DETAIL ────────────────────────────────────────────────────────────────────
+function renderIndSelector(){
+  document.getElementById('ind-selector').innerHTML=INDUSTRIES.map(ind=>`
+    <button class="ind-sel-btn${selectedIndustry===ind.id?' active':''}" onclick="selectIndustry('${ind.id}')">${ind.icon} ${ind.name}</button>`).join('');
+}
+function renderDetailContent(){
+  const container=document.getElementById('detail-content');
+  if(!selectedIndustry){container.innerHTML='<div class="no-selection">\u2191 Select an industry above</div>';return;}
+  const ind=INDUSTRIES.find(i=>i.id===selectedIndustry);
+  const liqColor=l=>({'Strong':'#22d3a0','Very Strong':'#10b981','Moderate-Strong':'#34d399','Stable':'#22d3a0','Moderate':'#f0b429','Thin':'#fb923c','Stressed':'#ef4444','Low-Moderate':'#f0b429','Unknown':'#64748b'}[l]||'#94a3b8');
+  const elColor=l=>({'Highly Inelastic':'#10b981','Very Inelastic':'#22d3a0','Inelastic':'#34d399','Moderately Inelastic':'#f0b429','Moderately Elastic':'#fb923c','Elastic':'#ef4444','Perfectly Inelastic':'#10b981'}[l]||'#94a3b8');
+
+  // Sector-average BS badges (compact, for top of companies section)
+  const bsBadges=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.07)">
+    ${[['Sector Avg Liquidity',ind.balanceSheet.sectorLiquidity,liqColor(ind.balanceSheet.sectorLiquidity)],
+       ['Avg Current Ratio',ind.balanceSheet.avgCurrentRatio,'#94a3b8'],
+       ['Sector D/E',ind.balanceSheet.debtToEquity,'#94a3b8'],
+       ['Net Margin Range',ind.balanceSheet.marginPct,'#94a3b8']].map(([k,v,c])=>`
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 12px;white-space:nowrap">
+        <div style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace;margin-bottom:2px">${k}</div>
+        <div style="font-size:13px;font-family:monospace;color:${c}">${v}</div>
+      </div>`).join('')}
+    <div style="background:rgba(240,180,41,0.07);border:1px solid rgba(240,180,41,0.2);border-radius:6px;padding:6px 12px;flex:1;min-width:180px">
+      <div style="font-size:9px;letter-spacing:1.5px;color:#f0b429;font-family:monospace;margin-bottom:2px">BUYER / END-CUSTOMER POSITION</div>
+      <div style="font-size:11px;color:#94a3b8">${ind.balanceSheet.consumerLiquidity}</div>
+    </div>
+  </div>`;
+
+  // Company rows — name, ticker, mcap, liquidity, curr ratio, D/E, margin, role
+  const companyRows=ind.companies.map(c=>`<tr>
+    <td style="color:#f1f5f9;font-weight:500">${c.name}</td>
+    <td>${c.ticker!=='—'?`<span class="ticker-badge">${c.ticker}</span>`:`<span class="private-badge">PRIVATE</span>`}</td>
+    <td style="color:#94a3b8">${c.mcap}</td>
+    <td style="color:${liqColor(c.liquidity)};font-family:monospace;font-size:11px">${c.liquidity}</td>
+    <td style="font-family:monospace;color:#94a3b8">${c.currentRatio||'—'}</td>
+    <td style="font-family:monospace;color:#94a3b8;font-size:10px">${c.debtToEquity}</td>
+    <td style="font-family:monospace;color:#94a3b8">${c.margin}</td>
+    <td style="color:#64748b;font-size:10px">${c.role}</td>
+  </tr>`).join('');
+
+  // Customer segment rows
+  const custSegments=ind.customerSegments.map((seg,i)=>{
+    const barW=Math.min(100,seg.pct*1.8);
+    const eColor=elColor(seg.elasticityLabel);
+    return`<div class="cust-row" onclick="toggleCust('${ind.id}',${i})" style="cursor:pointer">
+      <div class="cust-row-header" style="display:flex;align-items:center;gap:0;padding:12px 14px;user-select:none">
+        <!-- % label -->
+        <div style="width:44px;flex-shrink:0;text-align:right;padding-right:12px">
+          <span style="font-size:16px;font-family:monospace;font-weight:600;color:#22d3a0">${seg.pct}%</span>
+        </div>
+        <!-- bar + name -->
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;color:#e2e8f0;margin-bottom:5px">${seg.name}</div>
+          <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden">
+            <div style="height:100%;width:${barW}%;background:#22d3a0;border-radius:2px;opacity:0.6"></div>
+          </div>
+        </div>
+        <!-- badges -->
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;margin-left:14px">
+          <span style="font-size:9px;font-family:monospace;padding:2px 7px;border-radius:4px;border:1px solid ${eColor}50;color:${eColor};white-space:nowrap">${seg.elasticityLabel}</span>
+          <span style="font-size:10px;color:#475569;font-family:monospace">\u03b5=${seg.elasticity}</span>
+          <span id="chev-${ind.id}-${i}" style="color:#475569;font-size:10px;transition:transform 0.2s;display:inline-block">\u25bc</span>
+        </div>
+      </div>
+      <!-- EXPANDED DETAIL -->
+      <div id="custd-${ind.id}-${i}" style="display:none;padding:0 14px 14px 58px;border-top:1px solid rgba(255,255,255,0.05)">
+        <!-- stat pills -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 10px">
+          ${seg.currentRatio!=null?`<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:5px 10px">
+            <div style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace">CURRENT RATIO</div>
+            <div style="font-size:14px;font-family:monospace;color:#94a3b8">${seg.currentRatio}</div>
+          </div>`:''}
+          ${seg.debtToEquity?`<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:5px 10px">
+            <div style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace">DEBT / EQUITY</div>
+            <div style="font-size:12px;font-family:monospace;color:#94a3b8">${seg.debtToEquity}</div>
+          </div>`:''}
+          ${seg.marginPct?`<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:5px 10px">
+            <div style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace">NET MARGIN</div>
+            <div style="font-size:14px;font-family:monospace;color:#94a3b8">${seg.marginPct}</div>
+          </div>`:''}
+          <div style="background:rgba(255,255,255,0.04);border:1px solid ${liqColor(seg.liquidity)}40;border-radius:6px;padding:5px 10px">
+            <div style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace">LIQUIDITY</div>
+            <div style="font-size:14px;font-family:monospace;color:${liqColor(seg.liquidity)}">${seg.liquidity}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);border:1px solid ${eColor}40;border-radius:6px;padding:5px 10px">
+            <div style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace">DEMAND ELASTICITY</div>
+            <div style="font-size:12px;font-family:monospace;color:${eColor}">${seg.elasticityLabel} (\u03b5=${seg.elasticity})</div>
+          </div>
+        </div>
+        <!-- note -->
+        <div style="font-size:12px;color:#94a3b8;line-height:1.7;margin-bottom:10px">${seg.note}</div>
+        <!-- tickers -->
+        ${seg.tickers&&seg.tickers.length?`<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+          <span style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace;margin-right:4px">KEY NAMES:</span>
+          ${seg.tickers.map(t=>`<span class="ticker-badge">${t}</span>`).join('')}
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  const srcHtml=buildSrcDropdown('src-detail',['📊 Oil Consumption by Sector','💰 Corporate Liquidity & Balance Sheets']);
+  container.innerHTML=`<div class="detail-grid">
+
+    <!-- HEADER -->
+    <div class="detail-card full" style="border-color:rgba(255,255,255,0.1)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
+        <div><div class="detail-title">${ind.icon} ${ind.name}</div><div class="detail-fuel">Primary fuel: ${ind.oilType}</div></div>
+        <div class="detail-stats">
+          <div><div class="detail-stat-label">US OIL SHARE</div><div class="detail-stat-val" style="color:#22d3a0">${ind.oilSharePct}%</div></div>
+          <div><div class="detail-stat-label">SECTOR \u03b5</div><div class="detail-stat-val" style="color:${getLabelColor(ind.elasticity.label)}">${ind.elasticity.score}</div></div>
+        </div>
+      </div>
+      <div class="detail-elast-desc"><strong style="color:${getLabelColor(ind.elasticity.label)}">${ind.elasticity.label}</strong> \u2014 ${ind.elasticity.desc}</div>
+    </div>
+
+    <!-- CUSTOMER SEGMENTS — full width, hero section -->
+    <div class="detail-card full">
+      <div class="detail-label">END CUSTOMER SEGMENTS \u2014 click any row to expand</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        ${custSegments}
+      </div>
+    </div>
+
+    <!-- COMPANIES + SECTOR BS — merged -->
+    <div class="detail-card full">
+      <div class="detail-label">KEY PLAYERS &mdash; CUSTOMER SEGMENT DISTRIBUTION</div>
+      <div style="font-size:11px;color:#64748b;font-family:monospace;margin-bottom:14px">Click any player card to expand full segment breakdown</div>
+      ${renderPlayerCards(ind)}
+      ${renderETFPanel(ind)}
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.07)">
+        <div class="detail-label" style="margin-bottom:12px">BALANCE SHEET OVERVIEW</div>
+        ${bsBadges}
+        <div style="overflow-x:auto">
+          <table class="company-table">
+            <thead><tr>
+              <th>Company</th><th>Ticker</th><th>Mkt Cap</th>
+              <th>Liquidity</th><th>Curr. Ratio</th><th>D/E</th><th>Margin</th><th>Role</th>
+            </tr></thead>
+            <tbody>${companyRows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEMAND CHART -->
+    <div class="detail-card full">
+      <div class="detail-label">DEMAND SCORE BY OIL PRICE ($65 \u2192 $120)</div>
+      <div class="demand-bars">
+        ${PRICE_POINTS.map(p=>{const s=ind.demandScores[p];return`<div class="demand-bar-col">
+          <div class="demand-bar-score" style="color:${getColor(s)}">${s}</div>
+          <div class="demand-bar-inner"><div class="demand-bar-fill" style="height:${s}%;background:linear-gradient(to top,${getColor(s)},${getColor(s)}80)"></div></div>
+          <div class="demand-bar-label">$${p}</div>
+        </div>`;}).join('')}
+      </div>
+      <div class="demand-bar-footer"><span>\u2190 BASE ($65)</span><span style="color:#ef4444">EXTREME ($120) \u2192</span></div>
+    </div>
+
+  </div>${srcHtml}`;
+}
+
+
+function toggleCust(indId, i){
+  const detail=document.getElementById('custd-'+indId+'-'+i);
+  const chev=document.getElementById('chev-'+indId+'-'+i);
+  const isOpen=detail.style.display!=='none';
+  detail.style.display=isOpen?'none':'block';
+  if(chev) chev.style.transform=isOpen?'':'rotate(180deg)';
+}
+
+function makeDonutSVG(segs, size){
+  const entries=Object.entries(segs);
+  const total=entries.reduce((s,[,v])=>s+v,0);
+  const cx=size/2,cy=size/2,R=size*0.46,r=size*0.27;
+  let cum=0,paths='';
+  entries.forEach(([,val],i)=>{
+    const pct=val/total;
+    const a0=(cum/total)*Math.PI*2-Math.PI/2;
+    cum+=val;
+    const a1=(cum/total)*Math.PI*2-Math.PI/2;
+    const lg=pct>0.5?1:0;
+    const x1=cx+R*Math.cos(a0),y1=cy+R*Math.sin(a0);
+    const x2=cx+R*Math.cos(a1),y2=cy+R*Math.sin(a1);
+    const x3=cx+r*Math.cos(a1),y3=cy+r*Math.sin(a1);
+    const x4=cx+r*Math.cos(a0),y4=cy+r*Math.sin(a0);
+    paths+=`<path d="M${x1},${y1} A${R},${R} 0 ${lg} 1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${lg} 0 ${x4},${y4} Z" fill="${SEG_COLORS[i%SEG_COLORS.length]}" opacity="0.85"/>`;
+  });
+  return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex-shrink:0">${paths}</svg>`;
+}
+
+function togglePlayer(indId, pi){
+  const el=document.getElementById(`player-detail-${indId}-${pi}`);
+  const card=document.getElementById(`player-card-${indId}-${pi}`);
+  if(!el)return;
+  const open=el.style.display!=='none';
+  el.style.display=open?'none':'block';
+  if(card) card.classList.toggle('expanded',!open);
+}
+
+function renderPlayerCards(ind){
+  const players=INDUSTRY_PLAYERS[ind.id];
+  if(!players||!players.length)return'';
+  let html=`<div class="player-cards-grid">`;
+  players.forEach((p,pi)=>{
+    const segEntries=Object.entries(p.segs);
+    const pills=segEntries.slice(0,3).map(([k,v],si)=>
+      `<span class="player-seg-pill" style="background:${SEG_COLORS[si%SEG_COLORS.length]}20;color:${SEG_COLORS[si%SEG_COLORS.length]};border:1px solid ${SEG_COLORS[si%SEG_COLORS.length]}30">${k} ${v}%</span>`
+    ).join('');
+    const detail=segEntries.map(([k,v],si)=>`
+      <div class="player-seg-row">
+        <div class="player-seg-dot" style="background:${SEG_COLORS[si%SEG_COLORS.length]}"></div>
+        <span class="player-seg-label">${k}</span>
+        <div class="player-seg-bar-track"><div class="player-seg-bar-fill" style="width:${v}%;background:${SEG_COLORS[si%SEG_COLORS.length]}"></div></div>
+        <span class="player-seg-pct" style="color:${SEG_COLORS[si%SEG_COLORS.length]}">${v}%</span>
+      </div>`).join('');
+    html+=`<div class="player-card" id="player-card-${ind.id}-${pi}" onclick="togglePlayer('${ind.id}',${pi})">
+      <div class="player-card-top">
+        ${makeDonutSVG(p.segs,54)}
+        <div class="player-card-info">
+          <div class="player-name">${p.name}</div>
+          <div class="player-ticker">${p.ticker}</div>
+          <div class="player-cap">${p.cap}</div>
+        </div>
+      </div>
+      <div class="player-seg-pills">${pills}</div>
+      <div class="player-seg-detail" id="player-detail-${ind.id}-${pi}" style="display:none">
+        <div style="font-size:9px;letter-spacing:1.5px;color:#475569;font-family:monospace;margin-bottom:8px">CUSTOMER SEGMENT BREAKDOWN</div>
+        ${detail}
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+function renderETFPanel(ind){
+  const etfs=INDUSTRY_ETFS[ind.id];
+  if(!etfs)return'';
+  const corrColor=c=>{const a=Math.abs(c);return a>=0.75?'#22d3a0':a>=0.6?'#f0b429':a>=0.45?'#fb923c':'#a78bfa';};
+  const cards=etfs.map(e=>{
+    const pct=Math.round(Math.abs(e.corr)*100);
+    const col=corrColor(e.corr);
+    const dir=e.corr<0?'Inverse':'Positive';
+    return`<div class="etf-card">
+      <div class="etf-ticker">${e.ticker}</div>
+      <div class="etf-name">${e.name}</div>
+      <div class="etf-corr-label">OIL CORRELATION (5yr) — ${dir}</div>
+      <div class="etf-corr-bar-track"><div class="etf-corr-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:10px;font-family:monospace;font-weight:700;color:${col}">${e.corr>0?'+':''}${e.corr.toFixed(2)}</span>
+        <span style="font-size:9px;color:#475569;font-family:monospace">${pct}%</span>
+      </div>
+      <div class="etf-desc">${e.desc}</div>
+    </div>`;
+  }).join('');
+  return`<div class="etf-panel">
+    <div class="etf-panel-title">SECTOR ETFs — OIL PRICE CORRELATION</div>
+    <div class="etf-grid">${cards}</div>
+    <div class="etf-corr-legend">
+      ${[['>=75%','High','#22d3a0'],['60-74%','Moderate','#f0b429'],['45-59%','Low','#fb923c'],['<45%','Weak/Inverse','#a78bfa']].map(
+        ([r,l,c])=>`<div class="etf-legend-item"><div class="etf-legend-dot" style="background:${c}"></div>${r} — ${l}</div>`
+      ).join('')}
+    </div>
+  </div>`;
+}
+
+function selectIndustry(id){selectedIndustry=id;renderIndSelector();renderDetailContent();}
+function goToDetail(id){selectedIndustry=id;switchTab('detail');}
+
+// ── INVESTOR TOOLS ────────────────────────────────────────────────────────────
+function renderInvestorTools(){
+  document.getElementById('tab-investor').innerHTML=`
+  <div style="margin-bottom:20px">
+    <div style="font-size:10px;letter-spacing:3px;color:#475569;font-family:monospace;margin-bottom:6px">INVESTOR & TRADER TOOLS</div>
+    <div style="font-size:12px;color:#64748b;line-height:1.6">Curated trade ideas, sector correlations, and monitoring frameworks for oil macro positioning. Not financial advice.</div>
+  </div>
+  <div class="inv-grid">
+
+    <!-- SECTOR CORRELATIONS -->
+    <div class="inv-card" style="grid-column:span 1">
+      <div class="inv-card-title">📈 WTI Oil Price Correlations</div>
+      <div class="inv-card-sub">Historical correlation of sector ETFs to WTI price moves</div>
+      ${[
+        ["XLE (Energy)","+0.89","#22d3a0",78],
+        ["XLI (Industrials)","-0.21","#f0b429",21],
+        ["XLY (Discretionary)","-0.54","#fb923c",54],
+        ["XLU (Utilities)","-0.31","#f0b429",31],
+        ["GLD (Gold)","+0.42","#22d3a0",42],
+        ["DAL (Airlines)","-0.71","#ef4444",71],
+        ["UUP (USD Index)","-0.38","#f0b429",38],
+        ["EEM (Emerging Mkt)","-0.48","#fb923c",48],
+      ].map(([asset,corr,color,pct])=>`
+        <div class="corr-row">
+          <span class="corr-asset">${asset}</span>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar-track">
+              <div class="corr-bar-fill" style="width:${pct}%;background:${color};${corr.startsWith('-')?'right:0':'left:0'}"></div>
+            </div>
+          </div>
+          <span class="corr-val" style="color:${color}">${corr}</span>
+        </div>`).join('')}
+    </div>
+
+    <!-- TRADE IDEAS BY REGIME -->
+    <div class="inv-card">
+      <div class="inv-card-title">💼 Current Regime Playbook</div>
+      <div class="inv-card-sub">@ $${selectedPrice}/bbl — ${MACRO_SCENARIOS[getMacroKey(selectedPrice)].regime}</div>
+      ${MACRO_SCENARIOS[getMacroKey(selectedPrice)].regime_plays.map(play=>{
+        const isLong=play.startsWith('Long');const isShort=play.startsWith('Short');const isWatch=play.startsWith('Watch');
+        const cls=isLong?'long':isShort?'short':'hedge';
+        return`<div class="trade-idea ${cls}"><span class="trade-label">${isLong?'LONG ↑':isShort?'SHORT ↓':isWatch?'WATCH 👁️':'HEDGE 🛡️'}</span>${play.replace(/^(Long|Short|Watch|Hedge|Rotate): /,'')}</div>`;
+      }).join('')}
+    </div>
+
+    <!-- KEY METRICS TO WATCH -->
+    <div class="inv-card">
+      <div class="inv-card-title">📡 Key Metrics to Monitor</div>
+      <div class="inv-card-sub">Leading indicators for oil macro regime shifts</div>
+      ${[
+        ["WTI-Brent Spread","Widening = US isolation premium, supply stress"],
+        ["Jet Crack Spread","Aviation demand proxy, Hormuz disruption signal"],
+        ["US Rig Count (Baker Hughes)","Supply response lag indicator, weekly Fri release"],
+        ["Cushing, OK Inventories","WTI physical delivery point — contango/backwardation signal"],
+        ["10yr TIPS Breakeven","Market's inflation expectation — stagflation signal"],
+        ["GS Financial Conditions Index","Tightening = amplifies oil demand destruction"],
+        ["DXY (Dollar Index)","Strong USD = amplifies EM oil import pain"],
+        ["Tanker Day Rates (Baltic)","Hormuz disruption signal, supply chain stress"],
+        ["US Consumer Confidence","Demand destruction leading indicator"],
+        ["OPEC+ Compliance Rate","Supply side discipline — key for price floor"],
+      ].map(([metric,note])=>`
+        <div class="corr-row" style="display:block;padding:7px 0">
+          <div style="font-size:12px;color:#e2e8f0;font-family:monospace">${metric}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">${note}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- OPTIONS STRATEGY IDEAS -->
+    <div class="inv-card">
+      <div class="inv-card-title">🎯 Options & Hedging Ideas</div>
+      <div class="inv-card-sub">Structural positions for the current oil environment</div>
+      <div class="trade-idea long"><span class="trade-label">LONG CALLS</span>USO / XLE calls — oil above $90 if Hormuz closure extends beyond 2 weeks</div>
+      <div class="trade-idea short"><span class="trade-label">PUT SPREADS</span>DAL / UAL put spreads — aviation most exposed at $85+ sustained</div>
+      <div class="trade-idea hedge"><span class="trade-label">COLLAR</span>XLE collar — cap upside at $100+, fund puts below $75 for risk-off scenario</div>
+      <div class="trade-idea long"><span class="trade-label">BINARY EVENT</span>FRO / INSW calls — tanker stocks are direct Hormuz disruption proxy</div>
+      <div class="trade-idea hedge"><span class="trade-label">MACRO HEDGE</span>GLD or TLT puts — stagflation plays if oil >$95 sustained 30+ days</div>
+      <div class="trade-idea short"><span class="trade-label">SECTOR SHORT</span>XLY puts — consumer discretionary most vulnerable above $90/bbl</div>
+    </div>
+
+    <!-- SPR & POLICY TRIGGERS -->
+    <div class="inv-card">
+      <div class="inv-card-title">🏛️ Policy Response Triggers</div>
+      <div class="inv-card-sub">Government levers that could shift the demand/supply calculus</div>
+      ${[
+        ["$85+","SPR release discussions begin (US political threshold)","#f0b429"],
+        ["$90+","Coordinated IEA member SPR drawdown likely","#fb923c"],
+        ["$95+","Emergency G7 energy coordination, export restrictions","#fb923c"],
+        ["$100+","Congressional pressure on WH for price controls","#ef4444"],
+        ["$105+","OPEC+ emergency meeting, spare capacity deployment","#ef4444"],
+        ["$110+","Military escort programs for Hormuz tankers","#dc2626"],
+        ["$120+","Emergency price caps, demand subsidies in major economies","#991b1b"],
+      ].map(([level,action,color])=>`
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+          <div style="font-family:monospace;font-size:12px;color:${color};font-weight:700;white-space:nowrap;min-width:50px">${level}</div>
+          <div style="font-size:12px;color:#94a3b8">${action}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- WATCHLIST -->
+    <div class="inv-card">
+      <div class="inv-card-title">📋 Suggested Watchlist</div>
+      <div class="inv-card-sub">Tickers to track across the oil demand spectrum</div>
+      ${[
+        ["LONGS (Oil Shock Beneficiaries)","#22d3a0",["XOM — US major, domestic insulation","CVX — diversified, strong balance sheet","FRO — crude tanker, Hormuz direct play","INSW — product tanker operator","LMT — defense, war-driven demand","NOC — defense, advanced systems","NTR — fertilizer, food security play"]],
+        ["SHORTS (Oil Shock Victims)","#ef4444",["DAL — most exposed airline","CCL — cruise, pure discretionary","GM / F — auto, high oil sensitivity","XLY ETF — consumer discretionary basket","HYG — high yield credit, leverage stress"]],
+        ["HEDGES & MONITORS","#f0b429",["GLD — gold, stagflation hedge","UUP — dollar index","VIXY — volatility","TBT — short long bonds (inflation)"]],
+      ].map(([section,color,items])=>`
+        <div style="margin-bottom:12px">
+          <div style="font-size:9px;letter-spacing:2px;color:${color};font-family:monospace;margin-bottom:6px">${section}</div>
+          ${items.map(i=>`<div style="font-size:11px;color:#94a3b8;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.03)">${i}</div>`).join('')}
+        </div>`).join('')}
+    </div>
+
+  </div>${buildSrcDropdown('src-investor',['💰 Corporate Liquidity & Balance Sheets','📉 Demand Elasticity & Stagflation','🛢️ Oil Market & Iran Conflict'])}`;
+}
+
+// ── SOURCES ───────────────────────────────────────────────────────────────────
+function renderSources(){
+  const total=SOURCES.reduce((a,c)=>a+c.refs.length,0);
+  let html=`<div class="sources-meta">
+    <p>${total} references across ${SOURCES.length} categories · Click any title to open source</p>
+    <p style="color:#334155">Demand scores are model estimates. Not financial advice.</p>
+  </div>`;
+  SOURCES.forEach(cat=>{
+    html+=`<div class="source-category"><div class="source-cat-label">${cat.category}</div><div class="source-list">`;
+    cat.refs.forEach(ref=>{
+      html+=`<a href="${ref.url}" target="_blank" rel="noopener noreferrer" class="source-ref">
+        <div><div class="source-title">${ref.title}</div><div class="source-org">${ref.org} · ${ref.date}</div><div class="source-notes">${ref.notes}</div></div>
+        <div class="source-arrow">↗ open</div>
+      </a>`;
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('tab-sources').innerHTML=html;
+}
+
+// ── PROMPT ────────────────────────────────────────────────────────────────────
+function renderPrompt(){
+  document.getElementById('tab-prompt').innerHTML=`
+  <div class="prompt-wrap">
+    <div class="prompt-text">
+      <p>"I'd like to create a chart showing U.S. oil consumption by industry, who the primary end customers of those industries are, what the companies in the industries liquidity / balance sheet positions look like as well as those of the average consumer for the industry, and lastly what the demand elasticity of the products in each industry are."</p>
+      <p>"The next step will be scenario analysis. I want to map out, by industry, how demand will fluctuate based on energy prices at different oil price targets, starting at $65/bbl (WTI) as the 'base case' and working all the way up to $100/bbl. Each industry should be given a 'demand score' at each oil price range so that an 'average demand score' can be calculated at these different oil price targets."</p>
+    </div>
+    <div class="prompt-model">
+      <div class="prompt-model-item"><span class="prompt-model-key">MODEL</span><span class="prompt-model-val">claude-sonnet-4-6</span></div>
+      <div class="prompt-model-item"><span class="prompt-model-key">DATE</span><span class="prompt-model-val">March 5–6, 2026</span></div>
+      <div class="prompt-model-item"><span class="prompt-model-key">CONTEXT</span><span class="prompt-model-val">Iran-US conflict · Hormuz ~80% disrupted</span></div>
+      <div class="prompt-model-item"><span class="prompt-model-key">DISCLAIMER</span><span class="prompt-model-val">Not financial advice · Research only</span></div>
+    </div>
+  </div>`;
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+
+function toggleSrcDropdown(id){
+  const body=document.getElementById(id);
+  const chev=document.getElementById(id+'-chev');
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  if(chev) chev.style.transform=open?'':'rotate(180deg)';
+}
+
+function buildSrcDropdown(id, categories){
+  const catKeys = categories; // array of category strings to include
+  const cats = SOURCES.filter(s=>catKeys.includes(s.category));
+  let inner='';
+  cats.forEach(cat=>{
+    inner+=`<div class="src-group"><div class="src-cat-label">${cat.category}</div>`;
+    cat.refs.forEach(ref=>{
+      inner+=`<a href="${ref.url}" target="_blank" rel="noopener noreferrer" class="src-ref-row">
+        <div><div class="src-ref-title">${ref.title}</div><div class="src-ref-org">${ref.org} · ${ref.date}</div><div class="src-ref-notes">${ref.notes}</div></div>
+        <div class="src-ref-arrow">↗</div>
+      </a>`;
+    });
+    inner+='</div>';
+  });
+  return`<div class="src-dropdown">
+    <button class="src-dropdown-toggle" onclick="toggleSrcDropdown('${id}')">
+      <span id="${id}-chev" class="src-chev">▼</span>&nbsp;Sources &amp; References
+    </button>
+    <div class="src-dropdown-body" id="${id}">${inner}</div>
+  </div>`;
+}
+function switchTab(name){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const map={overview:0,scenario:1,detail:2,investor:3};
+  document.querySelectorAll('.tab-btn')[map[name]].classList.add('active');
+  const sliderBar = document.getElementById('scenario-slider-bar');
+  if(sliderBar) sliderBar.style.display = name==='scenario' ? 'flex' : 'none';
+  if(name==='detail'){renderIndSelector();renderDetailContent();}
+  if(name==='scenario'){
+    const slot=document.getElementById('src-scenario-slot');
+    if(slot&&!slot.dataset.built){slot.innerHTML=buildSrcDropdown('src-scenario',['📉 Demand Elasticity & Stagflation','🛢️ Oil Market & Iran Conflict']);slot.dataset.built='1';}
+  }
+  if(name==='investor'){renderInvestorTools();}
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+renderOverview();
+renderPriceButtons();
+renderAggCard();
+renderMacroPanel();
+renderScenarioTable();
+renderMatrix();
+updateSliderStyle(80);
+
+</script>
+</body>
+</html>
